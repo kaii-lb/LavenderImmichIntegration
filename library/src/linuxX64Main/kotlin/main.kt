@@ -1,22 +1,15 @@
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.curl.Curl
-import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.core.toByteArray
 import io.ktor.utils.io.readText
 import kotlinx.coroutines.runBlocking
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
-import kotlinx.serialization.json.Json
-import serialization.DeleteAssets
-import serialization.File
+import serialization.DownloadAssetsZip
 import serialization.LoginCredentials
 
 fun main() {
     val apiClient = ApiClient()
-    val userAuth = UserAuth(
+    val userAuth = User(
         apiClient = apiClient,
         endpointBase = "https://immich.selyn.pet"
     )
@@ -40,11 +33,12 @@ fun main() {
             val accessToken = response?.accessToken
 
             if (accessToken != null) {
-                val file = SystemFileSystem.sink(path = path, append = false)
-                    .buffered()
-                file.write(accessToken.toByteArray())
-                file.flush()
-                file.close()
+                SystemFileSystem.sink(path = path, append = false)
+                    .buffered().apply {
+                        write(accessToken.toByteArray())
+                        flush()
+                        close()
+                    }
 
                 println("Your access token is: $accessToken")
                 accessToken.trim()
@@ -61,17 +55,18 @@ fun main() {
             bearerToken = token
         )
 
-        val response = assetManager.downloadAsset(
-            id = "fc55e1d6-5ba0-4101-8f1c-faec14af8e83"
+        val response = assetManager.downloadZipArchive(
+            assets = DownloadAssetsZip(
+                assetIds = listOf("654e22a1-2e43-4601-8d2c-86897b0b53c1")
+            )
         )
 
-        if (response != null) {
-            val file = SystemFileSystem.sink(path = Path("/home/kaii/out.png"), append = false)
-                .buffered()
-
-            file.write(response)
-            file.flush()
-            file.close()
+        SystemFileSystem.sink(path = Path("/home/kaii/out.zip")).buffered().apply {
+            if (response != null) {
+                write(response)
+                flush()
+                close()
+            }
         }
     }
 }

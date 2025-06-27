@@ -1,5 +1,6 @@
 package serialization
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -25,3 +26,38 @@ data class LogoutResponse(
     val redirectUri: String,
     val successful: Boolean
 )
+
+@Serializable
+data class User(
+    val avatarColor: UserAvatarColors,
+    val email: String,
+    val id: String,
+    val name: String,
+    val profileChangedAt: String,
+    val profileImagePath: String
+)
+
+@Suppress("unused")
+@Serializable
+enum class UserAvatarColors {
+    @SerialName("primary")
+    Primary,
+    @SerialName("pink")
+    Pink,
+    @SerialName("red")
+    Red,
+    @SerialName("yellow")
+    Yellow,
+    @SerialName("blue")
+    Blue,
+    @SerialName("green")
+    Green,
+    @SerialName("purple")
+    Purple,
+    @SerialName("orange")
+    Orange,
+    @SerialName("gray")
+    Gray,
+    @SerialName("amber")
+    Amber
+}

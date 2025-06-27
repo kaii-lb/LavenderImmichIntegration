@@ -1,6 +1,7 @@
 package serialization
 
 import kotlinx.io.files.SystemPathSeparator
+import kotlinx.serialization.SerialName
 
 /** @param dateCreated in milliseconds since epoch
  * @param lastModified in milliseconds since epoch */
@@ -13,15 +14,24 @@ data class File(
     val name = path.split(SystemPathSeparator).last()
 }
 
+@Suppress("unused")
 enum class FileVisibility {
-    archive,
-    timeline,
-    hidden,
-    locked
+    @SerialName("archive")
+    Archive,
+    @SerialName("timeline")
+    Timeline,
+    @SerialName("hidden")
+    Hidden,
+    @SerialName("locked")
+    Locked
 }
 
+@Suppress("unused")
 enum class UploadStatus {
-    created,
-    replaced,
-    duplicate
+    @SerialName("created")
+    Created,
+    @SerialName("replaced")
+    Replaced,
+    @SerialName("duplicate")
+    Duplicate
 }

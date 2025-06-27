@@ -6,7 +6,8 @@ import serialization.LoginCredentials
 import serialization.LoginResponse
 import serialization.LogoutResponse
 
-class UserAuth(
+@Suppress("unused")
+class User(
     private val apiClient: ApiClient,
     private val endpointBase: String
 ) {

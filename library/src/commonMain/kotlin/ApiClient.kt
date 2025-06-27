@@ -22,6 +22,7 @@ import kotlinx.serialization.json.Json
 import kotlin.collections.component1
 import kotlin.collections.component2
 
+@Suppress("unused")
 class ApiClient() {
     private val client = HttpClient {
         install(ContentNegotiation) {
