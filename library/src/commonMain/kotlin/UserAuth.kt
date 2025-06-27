@@ -1,10 +1,7 @@
 import io.ktor.client.call.body
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
-import io.ktor.http.headers
-import kotlinx.serialization.json.Json
 import serialization.LoginCredentials
 import serialization.LoginResponse
 import serialization.LogoutResponse

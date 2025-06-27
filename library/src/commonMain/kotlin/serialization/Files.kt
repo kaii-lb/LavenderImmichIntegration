@@ -14,14 +14,14 @@ data class File(
 }
 
 enum class FileVisibility {
-    ARCHIVE,
-    TIMELINE,
-    HIDDEN,
-    LOCKED
+    archive,
+    timeline,
+    hidden,
+    locked
 }
 
 enum class UploadStatus {
-    CREATED,
-    REPLACED,
-    DUPLICATE
+    created,
+    replaced,
+    duplicate
 }
