@@ -14,13 +14,16 @@ import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.Url
+import io.ktor.http.content.ByteArrayContent
 import io.ktor.http.headers
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.logging.KtorSimpleLogger
+import io.ktor.utils.io.InternalAPI
+import io.ktor.utils.io.core.toByteArray
 import kotlinx.serialization.json.Json
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 @Suppress("unused")
 class ApiClient() {
@@ -39,11 +42,12 @@ class ApiClient() {
         }
         install(Logging) {
             logger = Logger.DEFAULT
-            level = LogLevel.INFO
+            level = LogLevel.ALL
             filter { request ->
                 request.url.toString().contains("/api/assets")
             }
         }
+
 
 
         expectSuccess = true
@@ -71,16 +75,15 @@ class ApiClient() {
         null
     }
 
+    @OptIn(InternalAPI::class)
     suspend fun delete(
         url: Url,
         headers: Map<String, Any>?,
         body: Any?
     ): HttpResponse? = try {
         client.delete(url = url) {
-            headers {
-                headers?.forEach { (key, value) ->
-                    header(key, value)
-                }
+            headers?.forEach { (key, value) ->
+                header(key, value)
             }
 
             setBody(body)

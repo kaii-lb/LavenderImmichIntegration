@@ -31,6 +31,14 @@ kotlin {
             }
         }
     }
+    jvm {
+        binaries {
+            executable {
+                applicationName = "ImmichIntegrationLibJVM"
+                mainClass = "MainKt"
+            }
+        }
+    }
 
     sourceSets {
         val commonMain by getting {
@@ -42,6 +50,11 @@ kotlin {
                 implementation(libs.kotlinx.io.core)
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.ktor.client.logging)
+            }
+        }
+        val jvmMain by getting {
+            dependencies {
+                implementation(libs.ktor.client.okhttp)
             }
         }
         val androidMain by getting {

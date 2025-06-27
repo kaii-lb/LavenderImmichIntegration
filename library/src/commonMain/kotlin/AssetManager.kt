@@ -1,16 +1,30 @@
 import io.ktor.client.call.body
+import io.ktor.client.request.HttpRequest
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
+import io.ktor.client.request.header
+import io.ktor.client.request.headers
+import io.ktor.client.request.setBody
+import io.ktor.client.request.url
 import io.ktor.client.statement.bodyAsBytes
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.Url
 import io.ktor.http.append
+import io.ktor.http.contentType
+import io.ktor.http.header.AcceptEncoding
+import io.ktor.utils.io.InternalAPI
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.readByteArray
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonObjectBuilder
+import kotlinx.serialization.json.putJsonObject
 import serialization.AssetInfo
 import serialization.DeleteAssets
 import serialization.DownloadAssetsZip
@@ -91,6 +105,7 @@ class AssetManager(
         return response?.body<UploadedAssetResponse>()
     }
 
+    @OptIn(InternalAPI::class)
     suspend fun deleteAssets(
         assets: DeleteAssets
     ): String? {
@@ -98,6 +113,7 @@ class AssetManager(
             url = Url("$endpointBase/api/assets"),
             headers = mapOf(
                 HttpHeaders.ContentType to ContentType.Application.Json,
+                HttpHeaders.Accept to ContentType.Any,
                 HttpHeaders.Authorization to "Bearer $bearerToken"
             ),
             body = assets

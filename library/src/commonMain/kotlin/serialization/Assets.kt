@@ -13,8 +13,8 @@ data class UploadedAssetResponse(
 
 @Serializable
 data class DeleteAssets(
-    val force: Boolean,
-    val ids: List<String>
+    val ids: List<String>,
+    val force: Boolean
 )
 
 /** @param rating is: -1 <= rating <= 5 */
