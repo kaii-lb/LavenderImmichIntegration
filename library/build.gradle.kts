@@ -13,32 +13,32 @@ plugins {
 }
 
 group = "io.github.kotlin"
-version = "1.0.0"
+version = "1.0.1"
 
 kotlin {
     androidTarget {
         publishLibraryVariants("release")
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
-    linuxX64 {
-        binaries {
-            executable {
-                baseName = "ImmichIntegrationLib"
-                runTask?.standardInput = System.`in`
-            }
-        }
-    }
-    jvm {
-        binaries {
-            executable {
-                applicationName = "ImmichIntegrationLibJVM"
-                mainClass = "MainKt"
-            }
-        }
-    }
+    // linuxX64 {
+    //     binaries {
+    //         executable {
+    //             baseName = "ImmichIntegrationLib"
+    //             runTask?.standardInput = System.`in`
+    //         }
+    //     }
+    // }
+    // jvm {
+    //     binaries {
+    //         executable {
+    //             applicationName = "ImmichIntegrationLibJVM"
+    //             mainClass = "MainKt"
+    //         }
+    //     }
+    // }
 
     sourceSets {
         val commonMain by getting {
@@ -52,21 +52,21 @@ kotlin {
                 implementation(libs.ktor.client.logging)
             }
         }
-        val jvmMain by getting {
-            dependencies {
-                implementation(libs.ktor.client.okhttp)
-            }
-        }
         val androidMain by getting {
             dependencies {
                 implementation(libs.ktor.client.okhttp)
             }
         }
-        val linuxX64Main by getting {
-            dependencies {
-                implementation(libs.ktor.client.curl)
-            }
-        }
+        // val jvmMain by getting {
+        //     dependencies {
+        //         implementation(libs.ktor.client.okhttp)
+        //     }
+        // }
+        // val linuxX64Main by getting {
+        //     dependencies {
+        //         implementation(libs.ktor.client.curl)
+        //     }
+        // }
         val commonTest by getting {
             dependencies {
                 implementation(libs.kotlin.test)
@@ -95,28 +95,22 @@ android {
 //     coordinates(group.toString(), "library", version.toString())
 //
 //     pom {
-//         name = "My library"
-//         description = "A library."
-//         inceptionYear = "2024"
-//         url = "https://github.com/kotlin/multiplatform-library-template/"
+//         name = "Lavender Immich Integration"
+//         description = "Crossplatform kotlin library for the Immich API"
+//         inceptionYear = "2026"
+//         url = "https://github.com/kaii-lb/LavenderImmichIntegration/"
 //         licenses {
 //             license {
-//                 name = "XXX"
-//                 url = "YYY"
-//                 distribution = "ZZZ"
+//                 name = "Apache License, Version 2.0"
+//                 url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
 //             }
 //         }
 //         developers {
 //             developer {
-//                 id = "XXX"
-//                 name = "YYY"
-//                 url = "ZZZ"
+//                 id = "kaii-lb"
+//                 name = "kaii-lb"
+//                 url = "https://github.com/kaii-lb"
 //             }
-//         }
-//         scm {
-//             url = "XXX"
-//             connection = "YYY"
-//             developerConnection = "ZZZ"
 //         }
 //     }
 // }
