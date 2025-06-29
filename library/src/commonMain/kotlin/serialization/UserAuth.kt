@@ -37,6 +37,26 @@ data class User(
     val profileImagePath: String
 )
 
+@Serializable
+data class UserExtra(
+    val role: UserRole,
+    val user: User
+)
+
+@Serializable
+data class UserMini(
+    val role: UserRole,
+    val userId: String
+)
+
+@Serializable
+enum class UserRole {
+    @SerialName("editor")
+    Editor,
+    @SerialName("viewer")
+    Viewer
+}
+
 @Suppress("unused")
 @Serializable
 enum class UserAvatarColors {

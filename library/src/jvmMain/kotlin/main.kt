@@ -8,9 +8,16 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
+import okhttp3.internal.toImmutableList
+import serialization.Album
+import serialization.CreateAlbum
 import serialization.DeleteAssets
 import serialization.DownloadAssetsZip
 import serialization.LoginCredentials
+import serialization.UploadAssetToAlbum
+import serialization.UserMini
+import serialization.UserRole
+import kotlin.system.exitProcess
 
 fun main() {
     val apiClient = ApiClient()
@@ -54,19 +61,21 @@ fun main() {
     }
 
     runBlocking {
-        val assetManager = AssetManager(
+        val albumManager = AlbumManager(
             apiClient = apiClient,
             endpointBase = "https://immich.selyn.pet",
             bearerToken = token
         )
 
-        val response = assetManager.deleteAssets(
-            assets = DeleteAssets(
-                ids = listOf("654e22a1-2e43-4601-8d2c-86897b0b53c1"),
-                force = false
+        val response = albumManager.addAssetToAlbum(
+            albumId = "008602f0-740b-456c-96fc-69ec5e0b1d0b",
+            assets = UploadAssetToAlbum(
+                ids = listOf("fc55e1d6-5ba0-4101-8f1c-faec14af8e83")
             )
         )
 
-        println(response?.toString())
+        println("Response: $response")
     }
+
+    exitProcess(0)
 }
