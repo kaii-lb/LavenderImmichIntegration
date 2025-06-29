@@ -1,22 +1,13 @@
-import io.ktor.client.HttpClient
-import io.ktor.client.request.delete
-import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
 import io.ktor.utils.io.core.toByteArray
 import io.ktor.utils.io.readText
 import kotlinx.coroutines.runBlocking
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
-import okhttp3.internal.toImmutableList
-import serialization.Album
-import serialization.CreateAlbum
-import serialization.DeleteAssets
-import serialization.DownloadAssetsZip
+import serialization.AlbumOrder
 import serialization.LoginCredentials
-import serialization.UploadAssetToAlbum
-import serialization.UserMini
-import serialization.UserRole
+import serialization.ModifyAlbumAsset
+import serialization.UpdateAlbumInfo
 import kotlin.system.exitProcess
 
 fun main() {
@@ -67,11 +58,8 @@ fun main() {
             bearerToken = token
         )
 
-        val response = albumManager.addAssetToAlbum(
-            albumId = "008602f0-740b-456c-96fc-69ec5e0b1d0b",
-            assets = UploadAssetToAlbum(
-                ids = listOf("fc55e1d6-5ba0-4101-8f1c-faec14af8e83")
-            )
+        val response = albumManager.deleteAlbum(
+            albumId = "008602f0-740b-456c-96fc-69ec5e0b1d0b"
         )
 
         println("Response: $response")

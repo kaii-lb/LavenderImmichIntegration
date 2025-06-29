@@ -9,6 +9,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
@@ -121,6 +122,27 @@ class ApiClient() {
     ): HttpResponse? = try {
         client.get(
             url = url
+        ) {
+            headers {
+                headers?.forEach { (key, value) ->
+                    header(key, value)
+                }
+            }
+
+            setBody(body)
+        }
+    } catch (e: ClientRequestException) {
+        log.error(e.response.bodyAsText())
+        null
+    }
+
+    suspend fun patch(
+        url: Url,
+        headers: Map<String, Any>?,
+        body: Any?
+    ): HttpResponse? = try {
+        client.patch(
+            url = url,
         ) {
             headers {
                 headers?.forEach { (key, value) ->

@@ -43,19 +43,19 @@ data class CreateAlbum(
 )
 
 @Serializable
-data class UploadAssetToAlbum(
+data class ModifyAlbumAsset(
     val ids: List<String>
 )
 
 @Serializable
-data class AddAssetResponse(
-    val error: AddAssetError?,
+data class AlbumAssetModificationResponse(
+    val error: AlbumAssetModificationError? = null,
     val id: String,
     val success: Boolean
 )
 
 @Serializable
-enum class AddAssetError {
+enum class AlbumAssetModificationError {
     @SerialName("duplicate")
     Duplicate,
     @SerialName("no_permission")
@@ -65,3 +65,12 @@ enum class AddAssetError {
     @SerialName("unknown")
     Unknown
 }
+
+@Serializable
+data class UpdateAlbumInfo(
+    val albumName: String,
+    val albumThumbnailAssetId: String,
+    val description: String,
+    val isActivityEnabled: Boolean,
+    val order: AlbumOrder
+)
