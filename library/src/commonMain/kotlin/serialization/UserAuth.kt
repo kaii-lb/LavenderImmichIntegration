@@ -49,6 +49,7 @@ data class UserMini(
     val userId: String
 )
 
+@Suppress("unused")
 @Serializable
 enum class UserRole {
     @SerialName("editor")

@@ -15,15 +15,11 @@ import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
 import io.ktor.http.Url
-import io.ktor.http.content.ByteArrayContent
 import io.ktor.http.headers
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.logging.KtorSimpleLogger
 import io.ktor.utils.io.InternalAPI
-import io.ktor.utils.io.core.toByteArray
 import kotlinx.serialization.json.Json
 
 @Suppress("unused")

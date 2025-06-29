@@ -4,10 +4,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
-import serialization.AlbumOrder
 import serialization.LoginCredentials
-import serialization.ModifyAlbumAsset
-import serialization.UpdateAlbumInfo
 import kotlin.system.exitProcess
 
 fun main() {

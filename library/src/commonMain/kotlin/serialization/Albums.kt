@@ -25,10 +25,12 @@ data class Album(
     val updatedAt: String
 )
 
+@Suppress("unused")
 @Serializable
 enum class AlbumOrder {
     @SerialName("asc")
     Ascending,
+
     @SerialName("desc")
     Descending
 }
@@ -54,14 +56,18 @@ data class AlbumAssetModificationResponse(
     val success: Boolean
 )
 
+@Suppress("unused")
 @Serializable
 enum class AlbumAssetModificationError {
     @SerialName("duplicate")
     Duplicate,
+
     @SerialName("no_permission")
     NoPermission,
+
     @SerialName("not_found")
     NotFound,
+
     @SerialName("unknown")
     Unknown
 }
