@@ -1,4 +1,4 @@
-package serialization
+package com.kaii.lavender.immichintegration.serialization
 
 import kotlinx.io.files.SystemPathSeparator
 import kotlinx.serialization.SerialName

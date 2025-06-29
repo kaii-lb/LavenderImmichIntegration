@@ -1,3 +1,5 @@
+package com.kaii.lavender.immichintegration
+
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.HttpTimeout

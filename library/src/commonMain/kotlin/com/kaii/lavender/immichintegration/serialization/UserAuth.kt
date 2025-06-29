@@ -1,4 +1,4 @@
-package serialization
+package com.kaii.lavender.immichintegration.serialization
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

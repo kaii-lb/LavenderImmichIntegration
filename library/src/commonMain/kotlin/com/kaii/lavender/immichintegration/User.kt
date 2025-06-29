@@ -1,10 +1,12 @@
+package com.kaii.lavender.immichintegration
+
 import io.ktor.client.call.body
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
-import serialization.LoginCredentials
-import serialization.LoginResponse
-import serialization.LogoutResponse
+import com.kaii.lavender.immichintegration.serialization.LoginCredentials
+import com.kaii.lavender.immichintegration.serialization.LoginResponse
+import com.kaii.lavender.immichintegration.serialization.LogoutResponse
 
 @Suppress("unused")
 class User(

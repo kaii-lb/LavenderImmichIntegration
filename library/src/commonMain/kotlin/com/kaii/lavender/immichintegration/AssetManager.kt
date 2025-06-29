@@ -1,3 +1,5 @@
+package com.kaii.lavender.immichintegration
+
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
@@ -12,15 +14,15 @@ import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.readByteArray
-import serialization.AssetInfo
-import serialization.DeleteAssets
-import serialization.DownloadAssetsZip
-import serialization.ExistingAssets
-import serialization.ExistingAssetsResponse
-import serialization.File
-import serialization.FileVisibility
-import serialization.UpdateAssets
-import serialization.UploadedAssetResponse
+import com.kaii.lavender.immichintegration.serialization.AssetInfo
+import com.kaii.lavender.immichintegration.serialization.DeleteAssets
+import com.kaii.lavender.immichintegration.serialization.DownloadAssetsZip
+import com.kaii.lavender.immichintegration.serialization.ExistingAssets
+import com.kaii.lavender.immichintegration.serialization.ExistingAssetsResponse
+import com.kaii.lavender.immichintegration.serialization.File
+import com.kaii.lavender.immichintegration.serialization.FileVisibility
+import com.kaii.lavender.immichintegration.serialization.UpdateAssets
+import com.kaii.lavender.immichintegration.serialization.UploadedAssetResponse
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant

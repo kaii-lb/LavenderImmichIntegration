@@ -1,13 +1,15 @@
+package com.kaii.lavender.immichintegration
+
 import io.ktor.client.call.body
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
-import serialization.Album
-import serialization.AlbumAssetModificationResponse
-import serialization.CreateAlbum
-import serialization.ModifyAlbumAsset
-import serialization.UpdateAlbumInfo
+import com.kaii.lavender.immichintegration.serialization.Album
+import com.kaii.lavender.immichintegration.serialization.AlbumAssetModificationResponse
+import com.kaii.lavender.immichintegration.serialization.CreateAlbum
+import com.kaii.lavender.immichintegration.serialization.ModifyAlbumAsset
+import com.kaii.lavender.immichintegration.serialization.UpdateAlbumInfo
 
 @Suppress("unused")
 class AlbumManager(
