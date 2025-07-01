@@ -38,41 +38,41 @@ data class AssetInfo(
     val checksum: String,
     val deviceAssetId: String,
     val deviceId: String,
-    val duplicateId: String?,
+    val duplicateId: String? = null,
     val duration: String,
     val hasMetadata: Boolean,
-    val exifInfo: AssetExifInfo?,
+    val exifInfo: AssetExifInfo? = null,
     val fileCreatedAt: String,
     val fileModifiedAt: String,
     val id: String,
     val isArchived: Boolean,
-    val isFavorite: Boolean?,
+    val isFavorite: Boolean? = null,
     val isOffline: Boolean,
     val isTrashed: Boolean,
 
     @Deprecated("This property was deprecated in v1.106.0")
-    val libraryId: String?,
+    val libraryId: String? = null,
 
-    val livePhotoVideoId: String?,
+    val livePhotoVideoId: String? = null,
     val localDateTime: String,
     val originalFileName: String,
-    val originalMimeType: String?,
+    val originalMimeType: String? = null,
     val originalPath: String,
-    val owner: User?,
+    val owner: User? = null,
     val ownerId: String,
 
     @Deprecated("This property was deprecated in v1.113.0")
-    val resized: Boolean?,
+    val resized: Boolean? = null,
 
     val thumbhash: String,
     val type: AssetType,
     val updatedAt: String,
     val visibility: FileVisibility,
-    val tags: List<AssetTags>?,
+    val tags: List<AssetTags>? = null,
 
-    val unassignedFaces: List<Face>?,
-    val stack: Stack?,
-    val people: List<Person>?,
+    val unassignedFaces: List<Face>? = null,
+    val stack: Stack? = null,
+    val people: List<Person>? = null,
 ) {
     /** Note that the returned file's path is just the file name*/
     @OptIn(ExperimentalTime::class)
@@ -91,28 +91,28 @@ data class AssetInfo(
 
 @Serializable
 data class AssetExifInfo(
-    val city: String?,
-    val country: String?,
-    val dateTimeOriginal: String?,
-    val description: String?,
-    val exifImageHeight: Int?,
-    val exifImageWidth: Int?,
-    val exposureTime: String?,
-    val fNumber: String?,
-    val fileSizeInByte: Long?,
-    val focalLength: Float?,
-    val iso: Float?,
-    val latitude: Float?,
-    val longitude: Float?,
-    val lensModel: String?,
-    val make: String?,
-    val model: String?,
-    val modifyDate: String?,
-    val orientation: String?,
-    val projectionType: String?,
-    val rating: Int?,
-    val state: UploadStatus?,
-    val timeZone: String?
+    val city: String? = null,
+    val country: String? = null,
+    val state: String? = null,
+    val dateTimeOriginal: String? = null,
+    val description: String? = null,
+    val exifImageHeight: Int? = null,
+    val exifImageWidth: Int? = null,
+    val exposureTime: String? = null,
+    val fNumber: String? = null,
+    val fileSizeInByte: Long? = null,
+    val focalLength: Float? = null,
+    val iso: Float? = null,
+    val latitude: Float? = null,
+    val longitude: Float? = null,
+    val lensModel: String? = null,
+    val make: String? = null,
+    val model: String? = null,
+    val modifyDate: String? = null,
+    val orientation: String? = null,
+    val projectionType: String? = null,
+    val rating: Int? = null,
+    val timeZone: String? = null
 )
 
 @Suppress("unused")
@@ -144,7 +144,7 @@ data class Face(
     val id: String,
     val imageHeight: String,
     val imageWidth: String,
-    val sourceType: FaceSourceType?
+    val sourceType: FaceSourceType? = null
 )
 
 @Suppress("unused")
@@ -169,7 +169,7 @@ data class Stack(
 @Serializable
 data class Person(
     val birthdate: String,
-    val color: String?,
+    val color: String? = null,
     val faces: List<Face>
 )
 
