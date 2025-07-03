@@ -10,6 +10,8 @@ import com.kaii.lavender.immichintegration.serialization.AlbumAssetModificationR
 import com.kaii.lavender.immichintegration.serialization.CreateAlbum
 import com.kaii.lavender.immichintegration.serialization.ModifyAlbumAsset
 import com.kaii.lavender.immichintegration.serialization.UpdateAlbumInfo
+import io.ktor.client.statement.bodyAsText
+import kotlinx.serialization.json.Json
 
 @Suppress("unused")
 class AlbumManager(
@@ -96,7 +98,15 @@ class AlbumManager(
             body = ""
         )
 
-        return response?.body<Album>()
+        val json = response?.bodyAsText()
+
+        if (json == null) return null
+
+        return if (json.startsWith("[")) {
+            Json.decodeFromString<List<Album>>(json).first()
+        } else {
+            Json.decodeFromString<Album>(json)
+        }
     }
 
     suspend fun updateAlbumInfo(

@@ -1,10 +1,12 @@
+package com.kaii.lavender.immichintegration
+
+import com.kaii.lavender.immichintegration.serialization.LoginCredentials
 import io.ktor.utils.io.core.toByteArray
 import io.ktor.utils.io.readText
 import kotlinx.coroutines.runBlocking
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
-import serialization.LoginCredentials
 import kotlin.system.exitProcess
 
 fun main() {
@@ -55,8 +57,8 @@ fun main() {
             bearerToken = token
         )
 
-        val response = albumManager.deleteAlbum(
-            albumId = "008602f0-740b-456c-96fc-69ec5e0b1d0b"
+        val response = albumManager.getAlbumInfo(
+            albumId = "98da30f2-f163-4a22-b960-92d793044402"
         )
 
         println("Response: $response")

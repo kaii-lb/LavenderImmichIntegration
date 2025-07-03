@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "io.github.kotlin"
-version = "1.0.1"
+version = "1.0.2"
 
 kotlin {
     androidTarget {
@@ -34,7 +34,7 @@ kotlin {
     //     binaries {
     //         executable {
     //             applicationName = "ImmichIntegrationLibJVM"
-    //             mainClass = "MainKt"
+    //             mainClass = "com.kaii.lavender.immichintegration.MainKt"
     //         }
     //     }
     // }
