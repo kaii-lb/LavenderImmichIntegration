@@ -2,6 +2,7 @@ package com.kaii.lavender.immichintegration.serialization
 
 import kotlinx.io.files.SystemPathSeparator
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /** @param dateCreated in milliseconds since epoch
  * @param lastModified in milliseconds since epoch */
@@ -35,3 +36,13 @@ enum class UploadStatus {
     @SerialName("duplicate")
     Duplicate
 }
+
+@Serializable
+data class RestoreFromTrash(
+    val ids: List<String>
+)
+
+@Serializable
+data class ModifyTrashResponse(
+    val count: Int
+)

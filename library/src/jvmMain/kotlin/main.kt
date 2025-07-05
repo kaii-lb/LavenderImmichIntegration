@@ -1,6 +1,7 @@
 package com.kaii.lavender.immichintegration
 
 import com.kaii.lavender.immichintegration.serialization.LoginCredentials
+import com.kaii.lavender.immichintegration.serialization.RestoreFromTrash
 import io.ktor.utils.io.core.toByteArray
 import io.ktor.utils.io.readText
 import kotlinx.coroutines.runBlocking
@@ -11,7 +12,7 @@ import kotlin.system.exitProcess
 
 fun main() {
     val apiClient = ApiClient()
-    val userAuth = User(
+    val userAuth = UserAuth(
         apiClient = apiClient,
         endpointBase = "https://immich.selyn.pet"
     )
@@ -51,14 +52,16 @@ fun main() {
     }
 
     runBlocking {
-        val albumManager = AlbumManager(
+        val albumManager = TrashManager(
             apiClient = apiClient,
             endpointBase = "https://immich.selyn.pet",
             bearerToken = token
         )
 
-        val response = albumManager.getAlbumInfo(
-            albumId = "98da30f2-f163-4a22-b960-92d793044402"
+        val response = albumManager.restoreItems(
+            ids = RestoreFromTrash(
+                ids = listOf("61598628-4565-45f0-98f7-7a18e429a2e7")
+            )
         )
 
         println("Response: $response")

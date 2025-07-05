@@ -49,6 +49,20 @@ data class UserMini(
     val userId: String
 )
 
+@Serializable
+data class UserFull(
+    val avatarColor: UserAvatarColors,
+    val email: String,
+    val id: String,
+    val name: String,
+    val isAdmin: Boolean,
+    val shouldChangePassword: Boolean,
+    val profileChangedAt: String,
+    val profileImagePath: String,
+    val createdAt: String,
+    val deletedAt: String? = null
+)
+
 @Suppress("unused")
 @Serializable
 enum class UserRole {
@@ -82,3 +96,18 @@ enum class UserAvatarColors {
     @SerialName("amber")
     Amber
 }
+
+@Serializable
+data class CreateProfilePicResponse(
+    val profileChangedAt: String,
+    val profileImagePath: String,
+    val userId: String
+)
+
+@Serializable
+data class UpdateUserInfo(
+    val avatarColor: UserAvatarColors? = null,
+    val email: String,
+    val password: String? = null,
+    val name: String
+)
