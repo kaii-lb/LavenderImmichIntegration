@@ -1,7 +1,6 @@
 package com.kaii.lavender.immichintegration
 
 import com.kaii.lavender.immichintegration.serialization.LoginCredentials
-import com.kaii.lavender.immichintegration.serialization.RestoreFromTrash
 import io.ktor.utils.io.core.toByteArray
 import io.ktor.utils.io.readText
 import kotlinx.coroutines.runBlocking
@@ -52,17 +51,13 @@ fun main() {
     }
 
     runBlocking {
-        val albumManager = TrashManager(
+        val albumManager = AssetManager(
             apiClient = apiClient,
             endpointBase = "https://immich.selyn.pet",
             bearerToken = token
         )
 
-        val response = albumManager.restoreItems(
-            ids = RestoreFromTrash(
-                ids = listOf("61598628-4565-45f0-98f7-7a18e429a2e7")
-            )
-        )
+        val response = albumManager.getDuplicateAssets()
 
         println("Response: $response")
     }

@@ -17,6 +17,7 @@ import kotlinx.io.readByteArray
 import com.kaii.lavender.immichintegration.serialization.AssetInfo
 import com.kaii.lavender.immichintegration.serialization.DeleteAssets
 import com.kaii.lavender.immichintegration.serialization.DownloadAssetsZip
+import com.kaii.lavender.immichintegration.serialization.DuplicateAsset
 import com.kaii.lavender.immichintegration.serialization.ExistingAssets
 import com.kaii.lavender.immichintegration.serialization.ExistingAssetsResponse
 import com.kaii.lavender.immichintegration.serialization.File
@@ -228,5 +229,19 @@ class AssetManager(
         )
 
         return response?.bodyAsBytes()
+    }
+
+    suspend fun getDuplicateAssets() : List<DuplicateAsset>? {
+        val response = apiClient.get(
+            url = Url("$endpointBase/api/duplicates"),
+            headers = mapOf(
+                HttpHeaders.ContentType to ContentType.Application.Json,
+                HttpHeaders.Accept to ContentType.Application.Json,
+                HttpHeaders.Authorization to "Bearer $bearerToken"
+            ),
+            body = ""
+        )
+
+        return response?.body<List<DuplicateAsset>>()
     }
 }

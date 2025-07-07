@@ -188,3 +188,9 @@ data class ExistingAssetsResponse(
 data class DownloadAssetsZip(
     val assetIds: List<String>
 )
+
+@Serializable
+data class DuplicateAsset(
+    val duplicateId: String,
+    val assets: List<AssetInfo>
+)
