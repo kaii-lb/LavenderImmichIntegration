@@ -1,5 +1,7 @@
 package com.kaii.lavender.immichintegration
 
+import com.kaii.lavender.immichintegration.serialization.CheckBulkUpload
+import com.kaii.lavender.immichintegration.serialization.CheckBulkUploadAsset
 import com.kaii.lavender.immichintegration.serialization.LoginCredentials
 import io.ktor.utils.io.core.toByteArray
 import io.ktor.utils.io.readText
@@ -57,7 +59,14 @@ fun main() {
             bearerToken = token
         )
 
-        val response = albumManager.getDuplicateAssets()
+        val response = albumManager.checkBulkUpload(
+            assets = CheckBulkUpload(
+                assets = listOf(CheckBulkUploadAsset(
+                    checksum = "9ca32c4615e9465ffa6bf637ff40502f0402341a",
+                    filename = "95cea8ae3175df3382c3584e01101ab4 (1).jpg"
+                ))
+            )
+        )
 
         println("Response: $response")
     }

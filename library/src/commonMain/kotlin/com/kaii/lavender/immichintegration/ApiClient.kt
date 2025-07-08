@@ -47,8 +47,6 @@ class ApiClient() {
             }
         }
 
-
-
         expectSuccess = true
     }
     private val log = KtorSimpleLogger("ApiClient")

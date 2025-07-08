@@ -194,3 +194,44 @@ data class DuplicateAsset(
     val duplicateId: String,
     val assets: List<AssetInfo>
 )
+
+@Serializable
+data class CheckBulkUpload(
+    val assets: List<CheckBulkUploadAsset>
+)
+
+@Serializable
+data class CheckBulkUploadAsset(
+    val checksum: String,
+    @SerialName("id") val filename: String
+)
+
+@Serializable
+data class CheckBulkUploadResponse(
+    val results: List<CheckBulkUploadResponseInfo>
+)
+
+@Serializable
+data class CheckBulkUploadResponseInfo(
+    val action: CheckBulkUploadAction,
+    val assetId: String? = null,
+    @SerialName("id") val filename: String,
+    val isTrashed: Boolean = false,
+    val reason: CheckBulkUploadReason? = null
+)
+
+@Serializable
+enum class CheckBulkUploadAction {
+    @SerialName("accept")
+    Accept,
+    @SerialName("reject")
+    Reject
+}
+
+@Serializable
+enum class CheckBulkUploadReason {
+    @SerialName("duplicate")
+    Duplicate,
+    @SerialName("unsupported-format")
+    UnsupportedFormat
+}

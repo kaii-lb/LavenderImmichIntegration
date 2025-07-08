@@ -38,6 +38,10 @@ kotlin {
     //         }
     //     }
     // }
+    //
+    // tasks.named<JavaExec>("runJvm") {
+    //     standardInput = System.`in`
+    // }
 
     sourceSets {
         val commonMain by getting {

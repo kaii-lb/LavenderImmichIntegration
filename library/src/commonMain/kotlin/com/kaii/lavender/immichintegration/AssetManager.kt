@@ -15,6 +15,9 @@ import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.readByteArray
 import com.kaii.lavender.immichintegration.serialization.AssetInfo
+import com.kaii.lavender.immichintegration.serialization.CheckBulkUpload
+import com.kaii.lavender.immichintegration.serialization.CheckBulkUploadAsset
+import com.kaii.lavender.immichintegration.serialization.CheckBulkUploadResponse
 import com.kaii.lavender.immichintegration.serialization.DeleteAssets
 import com.kaii.lavender.immichintegration.serialization.DownloadAssetsZip
 import com.kaii.lavender.immichintegration.serialization.DuplicateAsset
@@ -243,5 +246,21 @@ class AssetManager(
         )
 
         return response?.body<List<DuplicateAsset>>()
+    }
+
+    suspend fun checkBulkUpload(
+        assets: CheckBulkUpload
+    ): CheckBulkUploadResponse? {
+        val response = apiClient.post(
+            url = Url("$endpointBase/api/assets/bulk-upload-check"),
+            headers = mapOf(
+                HttpHeaders.ContentType to ContentType.Application.Json,
+                HttpHeaders.Accept to ContentType.Application.Json,
+                HttpHeaders.Authorization to "Bearer $bearerToken"
+            ),
+            body = assets
+        )
+
+        return response?.body<CheckBulkUploadResponse>()
     }
 }
