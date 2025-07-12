@@ -99,7 +99,7 @@ data class AssetExifInfo(
     val exifImageHeight: Int? = null,
     val exifImageWidth: Int? = null,
     val exposureTime: String? = null,
-    val fNumber: String? = null,
+    val fNumber: Float? = null,
     val fileSizeInByte: Long? = null,
     val focalLength: Float? = null,
     val iso: Float? = null,
