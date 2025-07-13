@@ -42,9 +42,6 @@ class ApiClient() {
         install(Logging) {
             logger = Logger.DEFAULT
             level = LogLevel.ALL
-            filter { request ->
-                request.url.toString().contains("/api/assets")
-            }
         }
 
         expectSuccess = true

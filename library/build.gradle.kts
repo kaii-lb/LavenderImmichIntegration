@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "io.github.kotlin"
-version = "1.0.7"
+version = "1.0.8"
 
 kotlin {
     androidTarget {
@@ -22,14 +22,14 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
-    // linuxX64 {
-    //     binaries {
-    //         executable {
-    //             baseName = "ImmichIntegrationLib"
-    //             runTask?.standardInput = System.`in`
-    //         }
-    //     }
-    // }
+    linuxX64 {
+        binaries {
+            executable {
+                baseName = "ImmichIntegrationLib"
+                runTask?.standardInput = System.`in`
+            }
+        }
+    }
     // jvm {
     //     binaries {
     //         executable {
@@ -63,6 +63,7 @@ kotlin {
         // val jvmMain by getting {
         //     dependencies {
         //         implementation(libs.ktor.client.okhttp)
+        //         implementation(libs.logback.classic)
         //     }
         // }
         // val linuxX64Main by getting {

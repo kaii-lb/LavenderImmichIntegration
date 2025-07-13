@@ -53,22 +53,17 @@ fun main() {
     }
 
     runBlocking {
-        val albumManager = AssetManager(
+        val serverManager = ServerManager(
             apiClient = apiClient,
             endpointBase = "https://immich.selyn.pet",
             bearerToken = token
         )
 
-        val response = albumManager.checkBulkUpload(
-            assets = CheckBulkUpload(
-                assets = listOf(CheckBulkUploadAsset(
-                    checksum = "9ca32c4615e9465ffa6bf637ff40502f0402341a",
-                    filename = "95cea8ae3175df3382c3584e01101ab4 (1).jpg"
-                ))
-            )
-        )
+        val about = serverManager.getAboutInfo()
+        val storage = serverManager.getStorage()
 
-        println("Response: $response")
+        println("About $about")
+        println("Storage $storage")
     }
 
     exitProcess(0)
