@@ -22,14 +22,14 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
-    linuxX64 {
-        binaries {
-            executable {
-                baseName = "ImmichIntegrationLib"
-                runTask?.standardInput = System.`in`
-            }
-        }
-    }
+    // linuxX64 {
+    //     binaries {
+    //         executable {
+    //             baseName = "ImmichIntegrationLib"
+    //             runTask?.standardInput = System.`in`
+    //         }
+    //     }
+    // }
     // jvm {
     //     binaries {
     //         executable {
