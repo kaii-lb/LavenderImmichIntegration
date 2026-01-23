@@ -13,5 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "lavender-immich-integration"
+rootProject.name = "immich-integration"
 include(":library")
+project(":library").name = "immich-integration"

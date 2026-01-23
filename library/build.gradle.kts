@@ -1,27 +1,33 @@
-@file:OptIn(ExperimentalBuildToolsApi::class, ExperimentalKotlinGradlePluginApi::class)
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
-import org.jetbrains.kotlin.buildtools.api.ExperimentalBuildToolsApi
+import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.vanniktech.mavenPublish)
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
-group = "io.github.kotlin"
-version = "1.0.9"
+group = "com.kaii.lavender"
+version = "2.0.0"
 
 kotlin {
-    androidTarget {
-        publishLibraryVariants("release")
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    androidLibrary {
+        namespace = "com.kaii.lavender.immichintegration"
+        compileSdk = 36
+        minSdk = 24
+
+        withJava()
+
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
+
     // linuxX64 {
     //     binaries {
     //         executable {
@@ -43,51 +49,22 @@ kotlin {
     //     standardInput = System.`in`
     // }
 
-    sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.content.negotiation)
-                implementation(libs.ktor.serialization.kotlinx.json)
-                implementation(libs.kotlinx.serialization.json)
-                implementation(libs.kotlinx.io.core)
-                implementation(libs.kotlinx.datetime)
-                implementation(libs.ktor.client.logging)
-            }
-        }
-        val androidMain by getting {
-            dependencies {
-                implementation(libs.ktor.client.okhttp)
-            }
-        }
-        // val jvmMain by getting {
-        //     dependencies {
-        //         implementation(libs.ktor.client.okhttp)
-        //         implementation(libs.logback.classic)
-        //     }
-        // }
-        // val linuxX64Main by getting {
-        //     dependencies {
-        //         implementation(libs.ktor.client.curl)
-        //     }
-        // }
-        val commonTest by getting {
-            dependencies {
-                implementation(libs.kotlin.test)
-            }
-        }
-    }
-}
 
-android {
-    namespace = "com.kaii.lavender.immichintegration"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.io.core)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.androidx.compose.foundation)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
     }
 }
 
