@@ -13,28 +13,28 @@ interface LoginStatus {
     @Serializable
     data class LoggedIn(
         @SerialName("accessToken")
-        public val accessToken: String,
+        val accessToken: String,
 
         @SerialName("isAdmin")
-        public val isAdmin: Boolean,
+        val isAdmin: Boolean,
 
         @SerialName("isOnboarded")
-        public val isOnboarded: Boolean,
+        val isOnboarded: Boolean,
 
         @SerialName("name")
-        public val name: String,
+        val name: String,
 
         @SerialName("profileImagePath")
-        public val profileImagePath: String,
+        val profileImagePath: String,
 
         @SerialName("shouldChangePassword")
-        public val shouldChangePassword: Boolean,
+        val shouldChangePassword: Boolean,
 
         @SerialName("userEmail")
-        public val userEmail: String,
+        val userEmail: String,
 
         @SerialName("userId")
-        public val userId: String,
+        val userId: String,
     ) : LoginStatus
 
     object Failed : LoginStatus
@@ -48,5 +48,6 @@ data class LogoutStatus(
 
 @Serializable
 data class AuthStatus(
+    @SerialName("authStatus")
     val valid: Boolean
 )

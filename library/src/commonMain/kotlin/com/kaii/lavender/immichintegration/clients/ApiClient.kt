@@ -9,6 +9,7 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.delete
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.headers
@@ -19,7 +20,9 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
+import io.ktor.http.content.PartData
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.logging.KtorSimpleLogger
@@ -65,7 +68,10 @@ class ApiClient() {
             }
 
             if (body != null) setBody(body) 
-            contentType(ContentType.Application.Json)
+
+            if (headers?.none { it.key == HttpHeaders.ContentType } != false) {
+                contentType(ContentType.Application.Json)
+            }
         }
     } catch (e: Throwable) {
         log.error(e.message)
@@ -163,6 +169,31 @@ class ApiClient() {
             }
 
             if (body != null) setBody(body) 
+            contentType(ContentType.Application.Json)
+        }
+    } catch (e: Throwable) {
+        log.error(e.message)
+        e.printStackTrace()
+        null
+    }
+
+    suspend fun uploadForm(
+        url: Url,
+        headers: Map<String, Any>?,
+        formData: List<PartData>
+    ): HttpResponse? = try {
+        client.submitFormWithBinaryData(
+            url = url.toString(),
+            formData = formData
+        ) {
+            headers?.let {
+                headers {
+                    headers.forEach { (key, value) ->
+                        header(key, value)
+                    }
+                }
+            }
+
             contentType(ContentType.Application.Json)
         }
     } catch (e: Throwable) {

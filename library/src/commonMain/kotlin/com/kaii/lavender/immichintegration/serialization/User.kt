@@ -45,3 +45,36 @@ data class UserResponse(
     val profileChangedAt: String,
     val profileImagePath: String
 )
+
+@Serializable
+data class ProfilePictureUpload(
+    val file: ByteArray
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ProfilePictureUpload
+
+        return file.contentEquals(other.file)
+    }
+
+    override fun hashCode(): Int {
+        return file.contentHashCode()
+    }
+}
+
+@Serializable
+data class ProfilePictureResponse(
+    val profileChangedAt: String,
+    val profileImagePath: String,
+    val userId: String
+)
+
+@Serializable
+data class UserDetails(
+    val avatarColor: UserAvatarColor? = null,
+    val email: String? = null,
+    val name: String? = null,
+    val password: String? = null
+)
