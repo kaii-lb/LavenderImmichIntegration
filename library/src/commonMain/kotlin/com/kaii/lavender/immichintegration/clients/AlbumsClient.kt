@@ -16,7 +16,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-class AlbumsClient(
+internal class AlbumsClient(
     private val baseUrl: String,
     private val client: ApiClient
 ) {

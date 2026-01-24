@@ -7,7 +7,7 @@ import io.ktor.client.call.body
 import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
 
-class ServerClient(
+internal class ServerClient(
     private val baseUrl: String,
     private val client: ApiClient
 ) {

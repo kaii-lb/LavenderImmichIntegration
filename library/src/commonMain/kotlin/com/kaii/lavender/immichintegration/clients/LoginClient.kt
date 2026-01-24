@@ -5,6 +5,7 @@ import com.kaii.lavender.immichintegration.serialization.LoginCredentials
 import com.kaii.lavender.immichintegration.serialization.LoginStatus
 import com.kaii.lavender.immichintegration.serialization.LogoutStatus
 import com.kaii.lavender.immichintegration.serialization.ProfilePictureResponse
+import com.kaii.lavender.immichintegration.serialization.ServerPing
 import com.kaii.lavender.immichintegration.serialization.UserDetails
 import com.kaii.lavender.immichintegration.serialization.UserResponse
 import io.ktor.client.call.body
@@ -16,10 +17,19 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
 import kotlinx.serialization.json.Json
 
-class LoginClient(
+internal class LoginClient(
     private val baseUrl: String,
     private val client: ApiClient
 ) {
+    suspend fun ping(accessToken: String): Boolean =
+        client.get(
+            url = Url("$baseUrl/api/server/ping"),
+            headers = mapOf(
+                HttpHeaders.Authorization to "Bearer $accessToken"
+            ),
+            body = null
+        )?.body<ServerPing>()?.response == "pong"
+
     suspend fun login(
         email: String,
         password: String,

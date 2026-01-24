@@ -5,7 +5,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.kaii.lavender.immichintegration.clients.ApiClient
 import com.kaii.lavender.immichintegration.clients.LoginClient
-import com.kaii.lavender.immichintegration.clients.ServerClient
 import com.kaii.lavender.immichintegration.serialization.LoginStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.math.log
 
 interface LoginState {
     object LoggedOut : LoginState
@@ -37,12 +35,6 @@ class LoginStateManager(
 ) {
     private val loginClient =
         LoginClient(
-            baseUrl = baseUrl,
-            client = apiClient
-        )
-
-    private val serverClient =
-        ServerClient(
             baseUrl = baseUrl,
             client = apiClient
         )
@@ -89,7 +81,7 @@ class LoginStateManager(
     ) = coroutineScope.launch(Dispatchers.IO) {
         if (baseUrl.isBlank()) return@launch
 
-        if (!serverClient.ping(accessToken)) {
+        if (!loginClient.ping(accessToken)) {
             _state.value = LoginState.ServerUnreachable
             return@launch
         }

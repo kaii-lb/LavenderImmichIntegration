@@ -14,7 +14,7 @@ import io.ktor.http.Url
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-class AssetsClient(
+internal class AssetsClient(
     private val baseUrl: String,
     private val client: ApiClient
 ) {
