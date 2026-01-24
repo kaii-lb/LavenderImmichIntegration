@@ -5,6 +5,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.kaii.lavender.immichintegration.clients.ApiClient
 import com.kaii.lavender.immichintegration.clients.LoginClient
+import com.kaii.lavender.immichintegration.clients.ServerClient
 import com.kaii.lavender.immichintegration.serialization.LoginStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +18,8 @@ import kotlin.math.log
 
 interface LoginState {
     object LoggedOut : LoginState
+
+    object ServerUnreachable : LoginState
 
     data class LoggedIn(
         val pfpUrl: String,
@@ -34,6 +37,12 @@ class LoginStateManager(
 ) {
     private val loginClient =
         LoginClient(
+            baseUrl = baseUrl,
+            client = apiClient
+        )
+
+    private val serverClient =
+        ServerClient(
             baseUrl = baseUrl,
             client = apiClient
         )
@@ -79,6 +88,11 @@ class LoginStateManager(
         previousPfpUrl: String
     ) = coroutineScope.launch(Dispatchers.IO) {
         if (baseUrl.isBlank()) return@launch
+
+        if (!serverClient.ping(accessToken)) {
+            _state.value = LoginState.ServerUnreachable
+            return@launch
+        }
 
         val validated = loginClient.validate(accessToken)
 
