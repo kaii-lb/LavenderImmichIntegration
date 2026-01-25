@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okio.buffer
+import okio.sink
 import java.io.File
 
 interface LoginState {
@@ -81,7 +83,7 @@ class LoginStateManager(
     ) = coroutineScope.launch(Dispatchers.IO) {
         if (baseUrl.isBlank()) return@launch
 
-        if (!loginClient.ping(accessToken)) {
+        if (!loginClient.ping()) {
             _state.value = LoginState.ServerUnreachable
             return@launch
         }
@@ -98,7 +100,8 @@ class LoginStateManager(
         if (me != null) {
             if (pfpSavePath.isNotBlank() && previousPfpUrl != me.profileImagePath) {
                 downloadPfp(userId = me.id, accessToken = accessToken)?.let { pfp ->
-                    File(pfpSavePath).writeBytes(pfp)
+                    File(pfpSavePath).sink().buffer().write(source = pfp)
+
                     savePath = pfpSavePath
                 }
             }
@@ -140,6 +143,12 @@ class LoginStateManager(
             refresh(accessToken, savePath, "")
         }
     }
+
+    fun validateServerAddress(
+        address: String
+    ): Boolean =
+        (address.startsWith("https://") || address.startsWith("http://"))
+                && ((Regex("(?<=:)[0-9]+$").containsMatchIn(address) && address.count { it == ':' } <= 2))
 }
 
 @Composable

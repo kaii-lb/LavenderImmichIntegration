@@ -1,13 +1,12 @@
 package com.kaii.lavender.immichintegration.clients
 
-import com.kaii.lavender.immichintegration.XApiKey
-import com.kaii.lavender.immichintegration.serialization.albums.AddAssetInfo
-import com.kaii.lavender.immichintegration.serialization.albums.AddAssetResponse
 import com.kaii.lavender.immichintegration.serialization.albums.Album
 import com.kaii.lavender.immichintegration.serialization.albums.AlbumCreationInfo
 import com.kaii.lavender.immichintegration.serialization.albums.AlbumCreationState
 import com.kaii.lavender.immichintegration.serialization.albums.AlbumGetState
 import com.kaii.lavender.immichintegration.serialization.albums.AlbumsGetAllState
+import com.kaii.lavender.immichintegration.serialization.albums.ManageAssetsRequest
+import com.kaii.lavender.immichintegration.serialization.albums.ManageAssetsResponse
 import io.ktor.client.call.body
 import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
@@ -52,18 +51,34 @@ internal class AlbumsClient(
         return (response?.let { AlbumCreationState.Created(it) } ?: AlbumCreationState.Failed)
     }
 
-    suspend fun addAssetsToAlbums(
-        albumIds: List<Uuid>,
+    suspend fun addAssets(
+        albumId: Uuid,
         assetIds: List<Uuid>,
         accessToken: String
     ): Boolean {
         val response = client.post(
-            url = Url("$baseUrl/albums/assets"),
+            url = Url("$baseUrl/albums/${albumId}/assets"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
-            body = Json.encodeToString(AddAssetInfo(albumIds, assetIds))
-        )?.body<AddAssetResponse>()
+            body = Json.encodeToString(ManageAssetsRequest(ids = assetIds))
+        )?.body<ManageAssetsResponse>()
+
+        return response != null && response.error == null && response.success
+    }
+
+    suspend fun removeAssets(
+        albumId: Uuid,
+        assetIds: List<Uuid>,
+        accessToken: String
+    ): Boolean {
+        val response = client.post(
+            url = Url("$baseUrl/albums/${albumId}/assets"),
+            headers = mapOf(
+                HttpHeaders.Authorization to "Bearer $accessToken"
+            ),
+            body = Json.encodeToString(ManageAssetsRequest(ids = assetIds))
+        )?.body<ManageAssetsResponse>()
 
         return response != null && response.error == null && response.success
     }
@@ -72,7 +87,7 @@ internal class AlbumsClient(
         id: Uuid,
         accessToken: String,
         withoutAssets: Boolean = false
-    ): AlbumGetState {
+    ): Album? {
         val response = client.get(
             url = Url("$baseUrl/albums/{$id}?withoutAssets=$withoutAssets"),
             headers = mapOf(
@@ -81,7 +96,7 @@ internal class AlbumsClient(
             body = null
         )?.body<Album>()
 
-        return (response?.let { AlbumGetState.Retrieved(it) } ?: AlbumGetState.Failed)
+        return response
     }
 
     suspend fun delete(

@@ -20,12 +20,12 @@ internal class ServerClient(
             body = null
         )?.body<ServerStorage>()
 
-    suspend fun ping(accessToken: String): Boolean =
+    suspend fun ping(
+        address: String? = null
+    ): Boolean =
         client.get(
-            url = Url("$baseUrl/api/server/ping"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("${address ?: baseUrl}/api/server/ping"),
+            headers = null,
             body = null
         )?.body<ServerPing>()?.response == "pong"
 

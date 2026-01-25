@@ -14,9 +14,16 @@ internal data class AddAssetResponse(
 
 @OptIn(ExperimentalUuidApi::class)
 @Serializable
-internal data class AddAssetInfo(
-    val albumIds: List<Uuid>,
-    val assetIds: List<Uuid>
+internal data class ManageAssetsRequest(
+    val ids: List<Uuid>
+)
+
+@OptIn(ExperimentalUuidApi::class)
+@Serializable
+internal data class ManageAssetsResponse(
+    val id: String,
+    val success: Boolean,
+    val error: BulkIdErrorReason? = null
 )
 
 @Serializable

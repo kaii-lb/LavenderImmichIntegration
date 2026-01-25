@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 interface ServerInfoState {
     object Unavailable : ServerInfoState
@@ -59,6 +60,10 @@ class ServerState(
             diskUsedPercentage = storage.diskUsagePercentage / 100f
         )
     }
+
+    fun ping(
+        address: String? = null
+    ) = runBlocking(Dispatchers.IO) { serverClient.ping(address) }
 }
 
 @Composable

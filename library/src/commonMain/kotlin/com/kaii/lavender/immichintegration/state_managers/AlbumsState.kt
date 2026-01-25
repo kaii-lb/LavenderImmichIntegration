@@ -23,11 +23,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
+import okio.buffer
+import okio.sink
+import okio.source
 import java.io.File
 import kotlin.time.Instant
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalUuidApi::class)
 class AlbumsStateManager(
     private val baseUrl: String,
     private val coroutineScope: CoroutineScope,
@@ -45,7 +49,6 @@ class AlbumsStateManager(
             client = apiClient
         )
 
-    @OptIn(ExperimentalUuidApi::class)
     suspend fun create(
         name: String,
         description: String,
@@ -72,8 +75,7 @@ class AlbumsStateManager(
         }
     }
 
-    @OptIn(ExperimentalUuidApi::class)
-    suspend fun delete(
+    fun delete(
         id: Uuid,
         accessToken: String,
         onResult: (deleted: Boolean) -> Unit
@@ -81,7 +83,6 @@ class AlbumsStateManager(
         onResult(albumClient.delete(id = id, accessToken = accessToken))
     }
 
-    @OptIn(ExperimentalUuidApi::class)
     fun addAssets(
         id: Uuid,
         accessToken: String,
@@ -113,8 +114,7 @@ class AlbumsStateManager(
         }
 
         missing.forEach { item ->
-            val file = File(item.absolutePath)
-            val assetData = file.readBytes() // TODO: buffer
+            val assetData = File(item.absolutePath).source().buffer().readByteArray()
 
             val resp = assetClient.upload(
                 AssetUploadRequest(
@@ -135,17 +135,35 @@ class AlbumsStateManager(
         }
 
         onResult(
-            albumClient.addAssetsToAlbums(
-                albumIds = listOf(id),
-                assetIds = assetIds.fastMap {
-                    it.id
-                },
+            albumClient.addAssets(
+                albumId = id,
+                assetIds = assetIds.fastMap { it.id },
                 accessToken = accessToken
             )
         )
     }
 
-    @OptIn(ExperimentalUuidApi::class)
+    fun removeAssets(
+        id: Uuid,
+        assetIds: List<Uuid>,
+        accessToken: String,
+        delete: Boolean = false,
+        onDone: (success: Boolean) -> Unit
+    ) = coroutineScope.launch(Dispatchers.IO) {
+        val res = albumClient.removeAssets(
+            albumId = id,
+            assetIds = assetIds,
+            accessToken = accessToken
+        )
+
+        val deleteRes = if (delete) assetClient.delete(
+            ids = assetIds,
+            accessToken = accessToken
+        ) else true
+
+        onDone(res && deleteRes)
+    }
+
     fun downloadAssets(
         id: Uuid,
         accessToken: String,
@@ -154,26 +172,59 @@ class AlbumsStateManager(
         onItemDone: () -> Unit,
         onFailed: () -> Unit
     ) = coroutineScope.launch(Dispatchers.IO) {
-        val state = albumClient.get(id = id, accessToken = accessToken)
+        val album = albumClient.get(id = id, accessToken = accessToken)
 
-        if (state is AlbumGetState.Retrieved) {
-            onSetupDone(state.album.assets.size)
+        if (album != null) {
+            onSetupDone(album.assets.size)
 
             // TODO: buffer
-            state.album.assets.forEach { asset ->
+            album.assets.forEach { asset ->
                 val downloaded = assetClient.download(id = Uuid.parse(asset.id), accessToken = accessToken)
 
                 if (downloaded != null) {
-                    val file = File(outputPath, asset.originalFileName)
-                    if (!file.exists()) file.createNewFile()
-
-                    file.writeBytes(downloaded)
+                    File(outputPath, asset.originalFileName)
+                        .sink().buffer()
+                        .write(source = downloaded)
 
                     onItemDone()
                 }
             }
         } else {
             onFailed()
+        }
+    }
+
+    fun getInfo(
+        id: Uuid,
+        accessToken: String,
+        withoutAssets: Boolean = false,
+        onDone: (state: AlbumGetState) -> Unit
+    ) = coroutineScope.launch(Dispatchers.IO) {
+        val album = albumClient.get(
+            id = id,
+            accessToken = accessToken,
+            withoutAssets = withoutAssets
+        )
+
+        onDone(album?.let { AlbumGetState.Retrieved(it) } ?: AlbumGetState.Failed)
+    }
+
+    fun checkMissing(
+        id: Uuid,
+        assetIds: List<Uuid>,
+        accessToken: String,
+        onDone: (missingFromCloud: List<Uuid>, missingFromDevice: List<Uuid>) -> Unit
+    ) = coroutineScope.launch(Dispatchers.IO) {
+        albumClient.get(
+            id = id,
+            accessToken = accessToken
+        )?.let { album ->
+            val albumAssetUuids = album.assets.fastMap { Uuid.parse(it.id) }
+
+            val missingFromDevice = albumAssetUuids.filter { it !in assetIds }
+            val missingFromCloud = assetIds.filter { it !in albumAssetUuids }
+
+            onDone(missingFromCloud, missingFromDevice)
         }
     }
 }

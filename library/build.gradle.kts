@@ -1,6 +1,5 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
-import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -32,7 +31,6 @@ kotlin {
     //     binaries {
     //         executable {
     //             baseName = "ImmichIntegrationLib"
-    //             runTask?.standardInput = System.`in`
     //         }
     //     }
     // }
@@ -42,6 +40,10 @@ kotlin {
     //             applicationName = "ImmichIntegrationLibJVM"
     //             mainClass = "com.kaii.lavender.immichintegration.MainKt"
     //         }
+    //     }
+    //
+    //     compilerOptions {
+    //         jvmTarget.set(JvmTarget.JVM_17)
     //     }
     // }
     //
