@@ -27,13 +27,14 @@ kotlin {
         }
     }
 
-    // linuxX64 {
-    //     binaries {
-    //         executable {
-    //             baseName = "ImmichIntegrationLib"
-    //         }
-    //     }
-    // }
+    linuxX64 {
+        binaries {
+            executable {
+                baseName = "ImmichIntegrationLib"
+            }
+        }
+    }
+
     // jvm {
     //     binaries {
     //         executable {
@@ -59,13 +60,27 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.io.core)
+            implementation(libs.kotlinx.io.bytestring)
+            implementation(libs.kotlinx.io.okio)
             implementation(libs.kotlinx.datetime)
             implementation(libs.ktor.client.logging)
             implementation(libs.androidx.compose.foundation)
         }
 
+        // jvmTest.dependencies {
+        //     implementation(libs.kotlin.test)
+        // }
+
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
+        }
+
+        linuxX64Main.dependencies {
+            implementation(libs.ktor.client.curl)
+        }
+
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
         }
     }
 }

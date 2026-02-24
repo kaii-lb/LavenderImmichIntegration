@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.kaii.lavender.immichintegration.state_managers
 
 import androidx.compose.runtime.Composable
@@ -8,13 +10,14 @@ import com.kaii.lavender.immichintegration.clients.LoginClient
 import com.kaii.lavender.immichintegration.serialization.LoginStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okio.buffer
-import okio.sink
-import java.io.File
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 
 interface LoginState {
     object LoggedOut : LoginState
@@ -100,7 +103,10 @@ class LoginStateManager(
         if (me != null) {
             if (pfpSavePath.isNotBlank() && previousPfpUrl != me.profileImagePath) {
                 downloadPfp(userId = me.id, accessToken = accessToken)?.let { pfp ->
-                    File(pfpSavePath).sink().buffer().write(source = pfp)
+                    SystemFileSystem.sink(Path(pfpSavePath)).buffered().use {
+                        it.write(pfp)
+                        it.flush()
+                    }
 
                     savePath = pfpSavePath
                 }

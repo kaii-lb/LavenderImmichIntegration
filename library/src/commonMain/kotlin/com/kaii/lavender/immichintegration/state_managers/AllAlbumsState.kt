@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.kaii.lavender.immichintegration.state_managers
 
 import androidx.compose.runtime.Composable
@@ -8,6 +10,7 @@ import com.kaii.lavender.immichintegration.clients.ApiClient
 import com.kaii.lavender.immichintegration.serialization.albums.AlbumsGetAllState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch

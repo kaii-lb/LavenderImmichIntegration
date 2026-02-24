@@ -3,7 +3,6 @@ package com.kaii.lavender.immichintegration.clients
 import com.kaii.lavender.immichintegration.serialization.albums.Album
 import com.kaii.lavender.immichintegration.serialization.albums.AlbumCreationInfo
 import com.kaii.lavender.immichintegration.serialization.albums.AlbumCreationState
-import com.kaii.lavender.immichintegration.serialization.albums.AlbumGetState
 import com.kaii.lavender.immichintegration.serialization.albums.AlbumsGetAllState
 import com.kaii.lavender.immichintegration.serialization.albums.ManageAssetsRequest
 import com.kaii.lavender.immichintegration.serialization.albums.ManageAssetsResponse
@@ -19,14 +18,11 @@ internal class AlbumsClient(
     private val baseUrl: String,
     private val client: ApiClient
 ) {
-    /** @param assetId Only returns albums that contain the asset Ignores the shared parameter undefined: get all albums*/
     suspend fun getAll(
-        accessToken: String,
-        assetId: String? = null,
-        shared: Boolean? = null
+        accessToken: String
     ): AlbumsGetAllState {
         val response = client.get(
-            url = Url("$baseUrl/albums?assetId=$assetId&shared=$shared"),
+            url = Url("$baseUrl/api/albums"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
@@ -41,7 +37,7 @@ internal class AlbumsClient(
         accessToken: String
     ): AlbumCreationState {
         val response = client.post(
-            url = Url("$baseUrl/albums"),
+            url = Url("$baseUrl/api/albums"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
@@ -57,7 +53,7 @@ internal class AlbumsClient(
         accessToken: String
     ): Boolean {
         val response = client.post(
-            url = Url("$baseUrl/albums/${albumId}/assets"),
+            url = Url("$baseUrl/api/albums/${albumId}/assets"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
@@ -73,7 +69,7 @@ internal class AlbumsClient(
         accessToken: String
     ): Boolean {
         val response = client.post(
-            url = Url("$baseUrl/albums/${albumId}/assets"),
+            url = Url("$baseUrl/api/albums/${albumId}/assets"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
@@ -89,7 +85,7 @@ internal class AlbumsClient(
         withoutAssets: Boolean = false
     ): Album? {
         val response = client.get(
-            url = Url("$baseUrl/albums/{$id}?withoutAssets=$withoutAssets"),
+            url = Url("$baseUrl/api/albums/${id}?withoutAssets=$withoutAssets"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
@@ -104,7 +100,7 @@ internal class AlbumsClient(
         accessToken: String
     ): Boolean {
         return client.delete(
-            url = Url("$baseUrl/albums/{$id}"),
+            url = Url("$baseUrl/api/albums/${id}"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),

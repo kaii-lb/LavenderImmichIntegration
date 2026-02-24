@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.kaii.lavender.immichintegration.state_managers
 
 import androidx.compose.runtime.Composable
@@ -19,14 +21,15 @@ import com.kaii.lavender.immichintegration.serialization.assets.AssetUploadReque
 import com.kaii.lavender.immichintegration.serialization.assets.UploadAssetRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
-import okio.buffer
-import okio.sink
-import okio.source
-import java.io.File
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
+import kotlinx.io.readByteArray
 import kotlin.time.Instant
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -114,7 +117,7 @@ class AlbumsStateManager(
         }
 
         missing.forEach { item ->
-            val assetData = File(item.absolutePath).source().buffer().readByteArray()
+            val assetData = SystemFileSystem.source(Path(item.absolutePath)).buffered().readByteArray()
 
             val resp = assetClient.upload(
                 AssetUploadRequest(
@@ -182,9 +185,10 @@ class AlbumsStateManager(
                 val downloaded = assetClient.download(id = Uuid.parse(asset.id), accessToken = accessToken)
 
                 if (downloaded != null) {
-                    File(outputPath, asset.originalFileName)
-                        .sink().buffer()
-                        .write(source = downloaded)
+                    SystemFileSystem.sink(Path(outputPath, asset.originalFileName)).buffered().use {
+                        it.write(downloaded)
+                        it.flush()
+                    }
 
                     onItemDone()
                 }

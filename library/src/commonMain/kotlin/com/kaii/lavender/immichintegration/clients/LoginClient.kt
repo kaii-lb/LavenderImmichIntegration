@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.kaii.lavender.immichintegration.clients
 
 import com.kaii.lavender.immichintegration.serialization.AuthStatus

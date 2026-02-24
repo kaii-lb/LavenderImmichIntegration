@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.kaii.lavender.immichintegration.state_managers
 
 import androidx.compose.runtime.Composable
@@ -7,10 +9,11 @@ import com.kaii.lavender.immichintegration.clients.ApiClient
 import com.kaii.lavender.immichintegration.clients.ServerClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 interface ServerInfoState {
     object Unavailable : ServerInfoState
@@ -39,12 +42,12 @@ class ServerState(
     private val _state = MutableStateFlow<ServerInfoState>(ServerInfoState.Unavailable)
     val state = _state.asStateFlow()
 
-    fun fetch(apiKey: String) = coroutineScope.launch(Dispatchers.IO) {
+    fun fetch(accessToken: String) = coroutineScope.launch(Dispatchers.IO) {
         if (baseUrl.isBlank()) return@launch
 
-        val online = serverClient.ping(apiKey)
-        val storage = serverClient.getStorage(apiKey)
-        val info = serverClient.getVersionInfo(apiKey)
+        val online = serverClient.ping()
+        val storage = serverClient.getStorage(accessToken)
+        val info = serverClient.getVersionInfo(accessToken)
 
         if (storage == null || info == null) {
             _state.value = ServerInfoState.Unavailable
@@ -61,9 +64,9 @@ class ServerState(
         )
     }
 
-    fun ping(
+    suspend fun ping(
         address: String? = null
-    ) = runBlocking(Dispatchers.IO) { serverClient.ping(address) }
+    ) = withContext(Dispatchers.IO) { serverClient.ping(address) }
 }
 
 @Composable

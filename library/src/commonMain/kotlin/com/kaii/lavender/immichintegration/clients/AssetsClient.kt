@@ -23,7 +23,7 @@ internal class AssetsClient(
         accessToken: String
     ): AssetUploadResponse? {
         val response = client.post(
-            url = Url("$baseUrl/assets"),
+            url = Url("$baseUrl/api/assets"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
@@ -40,7 +40,7 @@ internal class AssetsClient(
         force: Boolean = false
     ): Boolean {
         return client.delete(
-            url = Url("$baseUrl/assets"),
+            url = Url("$baseUrl/api/assets"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
@@ -54,7 +54,7 @@ internal class AssetsClient(
         accessToken: String
     ): AssetResponse? {
         val response = client.get(
-            url = Url("$baseUrl/assets/${id}"),
+            url = Url("$baseUrl/api/assets/${id}"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
@@ -70,7 +70,7 @@ internal class AssetsClient(
         accessToken: String
     ): ByteArray? {
         val response = client.get(
-            url = Url("$baseUrl/assets/${id}/original"),
+            url = Url("$baseUrl/api/assets/${id}/original"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
@@ -86,7 +86,7 @@ internal class AssetsClient(
         accessToken: String
     ): List<AssetBulkUploadCheckResult>? {
         val response = client.get(
-            url = Url("$baseUrl/assets/bulk-upload-check"),
+            url = Url("$baseUrl/api/assets/bulk-upload-check"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
