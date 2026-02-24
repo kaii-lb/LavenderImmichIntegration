@@ -8,6 +8,7 @@ import com.kaii.lavender.immichintegration.serialization.assets.AssetResponse
 import com.kaii.lavender.immichintegration.serialization.assets.AssetUploadRequest
 import com.kaii.lavender.immichintegration.serialization.assets.AssetUploadResponse
 import io.ktor.client.call.body
+import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
@@ -25,9 +26,10 @@ internal class AssetsClient(
         val response = client.post(
             url = Url("$baseUrl/api/assets"),
             headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
+                HttpHeaders.Authorization to "Bearer $accessToken",
+                HttpHeaders.ContentType to ContentType.MultiPart.FormData
             ),
-            body = asset
+            body = asset.toFormData()
         )?.body<AssetUploadResponse>()
 
         return response

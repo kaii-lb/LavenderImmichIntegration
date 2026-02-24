@@ -1,7 +1,12 @@
 package com.kaii.lavender.immichintegration.serialization.assets
 
-import kotlinx.serialization.Serializable
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.formData
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -44,10 +49,10 @@ data class AssetUploadRequest(
     val duration: String? = null,
     val fileCreatedAt: String,
     val fileModifiedAt: String,
-    val filename: String? = null,
+    val filename: String,
     val isFavorite: Boolean = false,
     val livePhotoVideoId: Uuid? = null,
-    val metadata: List<AssetMetaDataUpsertItem>,
+    val metadata: List<AssetMetaDataUpsertItem> = emptyList(),
     val sidecarData: ByteArray? = null,
     val visibility: AssetVisibility? = null
 ) {
@@ -81,7 +86,7 @@ data class AssetUploadRequest(
         result = 31 * result + (duration?.hashCode() ?: 0)
         result = 31 * result + fileCreatedAt.hashCode()
         result = 31 * result + fileModifiedAt.hashCode()
-        result = 31 * result + (filename?.hashCode() ?: 0)
+        result = 31 * result + filename.hashCode()
         result = 31 * result + (livePhotoVideoId?.hashCode() ?: 0)
         result = 31 * result + metadata.hashCode()
         result = 31 * result + (sidecarData?.contentHashCode() ?: 0)
@@ -89,6 +94,25 @@ data class AssetUploadRequest(
         return result
     }
 
+    internal fun toFormData() = MultiPartFormDataContent(
+        formData {
+            append("assetData", assetData, Headers.build {
+                append(HttpHeaders.ContentDisposition, "filename=\"$filename\"")
+            })
+
+            append("deviceAssetId", deviceAssetId)
+            append("deviceId", deviceId)
+            append("filename", filename)
+            append("fileModifiedAt", fileModifiedAt)
+            append("fileCreatedAt", fileCreatedAt)
+            append("isFavorite", isFavorite)
+
+            if (livePhotoVideoId != null) append("livePhotoVideoId", livePhotoVideoId.toString())
+            if (metadata.isNotEmpty()) append("metadata", Json.encodeToString(metadata))
+            if (sidecarData != null) append("sidecarData", sidecarData)
+            if (visibility != null) append("visibility", Json.encodeToString(visibility))
+        }
+    )
 }
 
 @Serializable
@@ -113,10 +137,12 @@ enum class AssetMetadataKey {
 enum class AssetMediaStatus {
     @SerialName("created")
     Created,
+
     @SerialName("replaced")
     Replaced,
+
     @SerialName("duplicate")
-    Duplicate,
+    Duplicate
 }
 
 @OptIn(ExperimentalUuidApi::class)
