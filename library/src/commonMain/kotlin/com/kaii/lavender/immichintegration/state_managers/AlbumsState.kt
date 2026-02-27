@@ -198,19 +198,18 @@ class AlbumsStateManager(
         }
     }
 
-    fun getInfo(
+    suspend fun getInfo(
         id: Uuid,
         accessToken: String,
-        withoutAssets: Boolean = false,
-        onDone: (state: AlbumGetState) -> Unit
-    ) = coroutineScope.launch(Dispatchers.IO) {
+        withoutAssets: Boolean = false
+    ) = withContext(Dispatchers.IO) {
         val album = albumClient.get(
             id = id,
             accessToken = accessToken,
             withoutAssets = withoutAssets
         )
 
-        onDone(album?.let { AlbumGetState.Retrieved(it) } ?: AlbumGetState.Failed)
+        return@withContext album?.let { AlbumGetState.Retrieved(it) } ?: AlbumGetState.Failed
     }
 
     fun checkMissing(

@@ -84,31 +84,3 @@ kotlin {
         }
     }
 }
-
-// mavenPublishing {
-//     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
-//
-//     signAllPublications()
-//
-//     coordinates(group.toString(), "library", version.toString())
-//
-//     pom {
-//         name = "Lavender Immich Integration"
-//         description = "Crossplatform kotlin library for the Immich API"
-//         inceptionYear = "2026"
-//         url = "https://github.com/kaii-lb/LavenderImmichIntegration/"
-//         licenses {
-//             license {
-//                 name = "Apache License, Version 2.0"
-//                 url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-//             }
-//         }
-//         developers {
-//             developer {
-//                 id = "kaii-lb"
-//                 name = "kaii-lb"
-//                 url = "https://github.com/kaii-lb"
-//             }
-//         }
-//     }
-// }
