@@ -11,12 +11,12 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
-group = "com.kaii.lavender"
+group = "io.github.kaii-lb.lavender"
 version = "2.0.0"
 
 kotlin {
     androidLibrary {
-        namespace = "com.kaii.lavender.immichintegration"
+        namespace = "io.github.kaii-lb.lavender.immichintegration"
         compileSdk = 36
         minSdk = 24
 
@@ -39,7 +39,7 @@ kotlin {
     //     binaries {
     //         executable {
     //             applicationName = "ImmichIntegrationLibJVM"
-    //             mainClass = "com.kaii.lavender.immichintegration.MainKt"
+    //             mainClass = "io.github.kaii-lb.immichintegration.MainKt"
     //         }
     //     }
     //
@@ -51,7 +51,6 @@ kotlin {
     // tasks.named<JavaExec>("runJvm") {
     //     standardInput = System.`in`
     // }
-
 
     sourceSets {
         commonMain.dependencies {
@@ -85,30 +84,42 @@ kotlin {
     }
 }
 
-// mavenPublishing {
-//     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
-//
-//     signAllPublications()
-//
-//     coordinates(group.toString(), "library", version.toString())
-//
-//     pom {
-//         name = "Lavender Immich Integration"
-//         description = "Crossplatform kotlin library for the Immich API"
-//         inceptionYear = "2026"
-//         url = "https://github.com/kaii-lb/LavenderImmichIntegration/"
-//         licenses {
-//             license {
-//                 name = "Apache License, Version 2.0"
-//                 url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-//             }
-//         }
-//         developers {
-//             developer {
-//                 id = "kaii-lb"
-//                 name = "kaii-lb"
-//                 url = "https://github.com/kaii-lb"
-//             }
-//         }
-//     }
-// }
+mavenPublishing {
+    publishToMavenCentral()
+
+    signAllPublications()
+
+    coordinates(group.toString(), "library", version.toString())
+
+    pom {
+        name = "Lavender Immich Integration"
+        description = "A cross platform library for Immich integration"
+        inceptionYear = "2025"
+        url = "https://github.com/kaii-lb/LavenderImmichIntegration"
+
+        licenses {
+            license {
+                name = "The Apache License, Version 2.0"
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        }
+
+        developers {
+            developer {
+                id = "kaii-lb"
+                name = "kaii-lb"
+                url = "https://github.com/kaii-lb"
+                email = "kaiilbbusiness@gmail.com"
+                organization = "kaii-lb"
+                organizationUrl = "https://github.com/kaii-lb"
+            }
+        }
+
+        scm {
+            url = "https://github.com/kaii-lb/LavenderImmichIntegration"
+            connection = "scm:git:git://github.com/kaii-lb/LavenderImmichIntegration.git"
+            developerConnection = "scm:git:ssh://git@github.com/kaii-lb/LavenderImmichIntegration.git"
+        }
+    }
+}
