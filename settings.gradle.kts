@@ -17,5 +17,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "immich-integration"
-include(":library")
-project(":library").name = "immich-integration"
+include(":immichintegration")
+project(":immichintegration").name = "immich-integration"

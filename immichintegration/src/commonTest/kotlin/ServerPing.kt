@@ -1,0 +1,19 @@
+import io.github.kaii_lb.lavender.immichintegration.clients.ApiClient
+import io.github.kaii_lb.lavender.immichintegration.clients.ServerClient
+import kotlinx.coroutines.runBlocking
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class ServerPing {
+    @Test
+    fun ping() {
+        val client = ServerClient(
+            baseUrl = "http://localhost:2283",
+            client = ApiClient()
+        )
+
+        runBlocking {
+            assertEquals(client.ping(), true)
+        }
+    }
+}
