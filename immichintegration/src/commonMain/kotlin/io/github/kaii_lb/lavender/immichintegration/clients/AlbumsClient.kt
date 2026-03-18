@@ -3,6 +3,7 @@ package io.github.kaii_lb.lavender.immichintegration.clients
 import io.github.kaii_lb.lavender.immichintegration.serialization.albums.Album
 import io.github.kaii_lb.lavender.immichintegration.serialization.albums.AlbumCreationInfo
 import io.github.kaii_lb.lavender.immichintegration.serialization.albums.AlbumCreationState
+import io.github.kaii_lb.lavender.immichintegration.serialization.albums.AlbumRenameRequest
 import io.github.kaii_lb.lavender.immichintegration.serialization.albums.AlbumsGetAllState
 import io.github.kaii_lb.lavender.immichintegration.serialization.albums.ManageAssetsRequest
 import io.github.kaii_lb.lavender.immichintegration.serialization.albums.ManageAssetsResponse
@@ -14,7 +15,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-internal class AlbumsClient(
+class AlbumsClient(
     private val baseUrl: String,
     private val client: ApiClient
 ) {
@@ -105,6 +106,20 @@ internal class AlbumsClient(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
             body = null
+        ) != null
+    }
+
+    suspend fun rename(
+        id: Uuid,
+        newName: String,
+        accessToken: String
+    ): Boolean {
+        return client.patch(
+            url = Url("$baseUrl/api/albums/${id}"),
+            headers = mapOf(
+                HttpHeaders.Authorization to "Bearer $accessToken"
+            ),
+            body = AlbumRenameRequest(newName)
         ) != null
     }
 }

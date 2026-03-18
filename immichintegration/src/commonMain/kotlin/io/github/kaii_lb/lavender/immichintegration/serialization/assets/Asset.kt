@@ -151,3 +151,21 @@ data class AssetDeleteRequest(
     val ids: List<Uuid>,
     val force: Boolean
 )
+
+@OptIn(ExperimentalUuidApi::class)
+@Serializable
+data class AssetFavouriteRequest(
+    val ids: List<Uuid>,
+    val isFavorite: Boolean
+)
+
+@OptIn(ExperimentalUuidApi::class)
+@Serializable
+data class AssetRestoreRequest(
+    val ids: List<Uuid>
+)
+
+@Serializable
+data class AssetRestoreResponse(
+    val count: Int
+)

@@ -19,3 +19,8 @@ interface AlbumCreationState {
 
     object Failed : AlbumCreationState
 }
+
+@Serializable
+data class AlbumRenameRequest(
+    val albumName: String
+)
