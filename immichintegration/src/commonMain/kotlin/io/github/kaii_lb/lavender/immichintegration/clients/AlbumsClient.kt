@@ -53,15 +53,15 @@ class AlbumsClient(
         assetIds: List<Uuid>,
         accessToken: String
     ): Boolean {
-        val response = client.post(
+        val response = client.put(
             url = Url("$baseUrl/api/albums/${albumId}/assets"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
             body = Json.encodeToString(ManageAssetsRequest(ids = assetIds))
-        )?.body<ManageAssetsResponse>()
+        )?.body<List<ManageAssetsResponse>>()
 
-        return response != null && response.error == null && response.success
+        return response != null && response.all { it.error == null && it.success }
     }
 
     suspend fun removeAssets(
@@ -69,15 +69,15 @@ class AlbumsClient(
         assetIds: List<Uuid>,
         accessToken: String
     ): Boolean {
-        val response = client.post(
+        val response = client.delete(
             url = Url("$baseUrl/api/albums/${albumId}/assets"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
             body = Json.encodeToString(ManageAssetsRequest(ids = assetIds))
-        )?.body<ManageAssetsResponse>()
+        )?.body<List<ManageAssetsResponse>>()
 
-        return response != null && response.error == null && response.success
+        return response != null && response.all { it.error == null && it.success }
     }
 
     suspend fun get(
