@@ -2,7 +2,6 @@
 
 package io.github.kaii_lb.lavender.immichintegration.state_managers
 
-import androidx.compose.ui.util.fastMap
 import io.github.kaii_lb.lavender.immichintegration.clients.ApiClient
 import io.github.kaii_lb.lavender.immichintegration.clients.ServerClient
 import io.github.kaii_lb.lavender.immichintegration.serialization.UsageByUserDto
