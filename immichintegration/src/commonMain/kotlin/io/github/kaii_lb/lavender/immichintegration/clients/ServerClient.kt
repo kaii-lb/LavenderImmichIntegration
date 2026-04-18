@@ -2,6 +2,7 @@ package io.github.kaii_lb.lavender.immichintegration.clients
 
 import io.github.kaii_lb.lavender.immichintegration.serialization.ServerInfo
 import io.github.kaii_lb.lavender.immichintegration.serialization.ServerPing
+import io.github.kaii_lb.lavender.immichintegration.serialization.ServerStatistics
 import io.github.kaii_lb.lavender.immichintegration.serialization.ServerStorage
 import io.ktor.client.call.body
 import io.ktor.http.HttpHeaders
@@ -36,5 +37,14 @@ internal class ServerClient(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
             body = null
-        )?.body<ServerInfo>()
+        )?.body()
+
+    suspend fun getUsagePerUser(accessToken: String): ServerStatistics? =
+        client.get(
+            url = Url("$baseUrl/api/server/statistics"),
+            headers = mapOf(
+                HttpHeaders.Authorization to "Bearer $accessToken"
+            ),
+            body = null
+        )?.body()
 }

@@ -12,29 +12,14 @@ data class LoginCredentials(
 interface LoginStatus {
     @Serializable
     data class LoggedIn(
-        @SerialName("accessToken")
         val accessToken: String,
-
-        @SerialName("isAdmin")
         val isAdmin: Boolean,
-
-        @SerialName("isOnboarded")
         val isOnboarded: Boolean,
-
-        @SerialName("name")
         val name: String,
-
-        @SerialName("profileImagePath")
         val profileImagePath: String,
-
-        @SerialName("shouldChangePassword")
         val shouldChangePassword: Boolean,
-
-        @SerialName("userEmail")
         val userEmail: String,
-
-        @SerialName("userId")
-        val userId: String,
+        val userId: String
     ) : LoginStatus
 
     object Failed : LoginStatus

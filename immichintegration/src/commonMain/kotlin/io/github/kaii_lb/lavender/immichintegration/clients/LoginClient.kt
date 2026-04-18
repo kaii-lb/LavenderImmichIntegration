@@ -3,6 +3,8 @@
 package io.github.kaii_lb.lavender.immichintegration.clients
 
 import io.github.kaii_lb.lavender.immichintegration.serialization.AuthStatus
+import io.github.kaii_lb.lavender.immichintegration.serialization.ChangePasswordRequest
+import io.github.kaii_lb.lavender.immichintegration.serialization.FullUserResponse
 import io.github.kaii_lb.lavender.immichintegration.serialization.LoginCredentials
 import io.github.kaii_lb.lavender.immichintegration.serialization.LoginStatus
 import io.github.kaii_lb.lavender.immichintegration.serialization.LogoutStatus
@@ -86,14 +88,14 @@ internal class LoginClient(
         return response?.valid ?: false
     }
 
-    suspend fun getMe(accessToken: String): UserResponse? {
+    suspend fun getMe(accessToken: String): FullUserResponse? {
         val response = client.get(
             url = Url("$baseUrl/api/users/me"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
             body = null
-        )?.body<UserResponse>()
+        )?.body<FullUserResponse>()
 
         return response
     }
@@ -132,9 +134,10 @@ internal class LoginClient(
             body = null
         )?.body<ByteArray>()
 
-    suspend fun updateUsername(
-        name: String,
-        accessToken: String
+    suspend fun updateInfo(
+        accessToken: String,
+        name: String? = null,
+        email: String? = null
     ): Boolean =
         client.put(
             url = Url("$baseUrl/api/users/me"),
@@ -143,4 +146,17 @@ internal class LoginClient(
             ),
             body = UserDetails(name = name)
         )?.status == HttpStatusCode.OK
+
+    suspend fun changePassword(
+        accessToken: String,
+        currentPassword: String,
+        newPassword: String,
+        invalidateSessions: Boolean = false
+    ): Boolean = client.post(
+        url = Url("$baseUrl/api/auth/change-password"),
+        headers = mapOf(
+            HttpHeaders.Authorization to "Bearer $accessToken"
+        ),
+        body = ChangePasswordRequest(invalidateSessions, currentPassword, newPassword)
+    )?.status == HttpStatusCode.OK
 }

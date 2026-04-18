@@ -2,17 +2,13 @@
 
 package io.github.kaii_lb.lavender.immichintegration.state_managers
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.util.fastMap
 import io.github.kaii_lb.lavender.immichintegration.clients.ApiClient
 import io.github.kaii_lb.lavender.immichintegration.clients.ServerClient
+import io.github.kaii_lb.lavender.immichintegration.serialization.UsageByUserDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 interface ServerInfoState {
@@ -24,61 +20,59 @@ interface ServerInfoState {
         val online: Boolean,
         val diskSize: String,
         val diskUsed: String,
-        val diskUsedPercentage: Float
+        val diskUsedPercentage: Float,
+        val perUserStorage: List<UsageByUserDto>
     ) : ServerInfoState
 }
 
 class ServerState(
-    private val baseUrl: String,
-    private val coroutineScope: CoroutineScope,
-    apiClient: ApiClient
+    private val coroutineScope: CoroutineScope
 ) {
-    private val serverClient =
-        ServerClient(
+    private var serverClient: ServerClient? = null
+
+    fun setBaseUrl(baseUrl: String, apiClient: ApiClient) {
+        if (baseUrl.isBlank()) return
+
+        serverClient = ServerClient(
             baseUrl = baseUrl,
             client = apiClient
         )
+    }
 
-    private val _state = MutableStateFlow<ServerInfoState>(ServerInfoState.Unavailable)
-    val state = _state.asStateFlow()
+    suspend fun fetch(accessToken: String): ServerInfoState = withContext(Dispatchers.IO) {
+        if (serverClient == null) return@withContext ServerInfoState.Unavailable
 
-    fun fetch(accessToken: String) = coroutineScope.launch(Dispatchers.IO) {
-        if (baseUrl.isBlank()) return@launch
+        val online = serverClient!!.ping()
+        val storage = serverClient!!.getStorage(accessToken)
+        val info = serverClient!!.getVersionInfo(accessToken)
+        val perUserStorage = serverClient!!.getUsagePerUser(accessToken)
 
-        val online = serverClient.ping()
-        val storage = serverClient.getStorage(accessToken)
-        val info = serverClient.getVersionInfo(accessToken)
-
-        if (storage == null || info == null) {
-            _state.value = ServerInfoState.Unavailable
-            return@launch
+        if (storage == null || info == null || perUserStorage == null) {
+            return@withContext ServerInfoState.Unavailable
         }
 
-        _state.value = ServerInfoState.Available(
+        return@withContext ServerInfoState.Available(
             version = info.version,
             build = info.build,
             online = online,
             diskSize = storage.diskSize,
             diskUsed = storage.diskUse,
-            diskUsedPercentage = storage.diskUsagePercentage / 100f
+            diskUsedPercentage = storage.diskUsagePercentage / 100f,
+            perUserStorage = perUserStorage.usageByUser
         )
     }
 
     suspend fun ping(
         address: String? = null
-    ) = withContext(Dispatchers.IO) { serverClient.ping(address) }
-}
+    ) = withContext(Dispatchers.IO) {
+        if (serverClient == null) return@withContext false
 
-@Composable
-fun rememberServerState(baseUrl: String): ServerState {
-    val apiClient = LocalApiClient.current
-    val coroutineScope = rememberCoroutineScope()
-
-    return remember(baseUrl) {
-        ServerState(
-            baseUrl = baseUrl,
-            coroutineScope = coroutineScope,
-            apiClient = apiClient
-        )
+        serverClient!!.ping(address)
     }
+
+    fun validateServerAddress(
+        address: String
+    ): Boolean =
+        (address.startsWith("https://") || address.startsWith("http://"))
+                && ((Regex("(?<=:)[0-9]+$").containsMatchIn(address) && address.count { it == ':' } <= 2))
 }

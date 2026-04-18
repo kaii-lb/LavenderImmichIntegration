@@ -6,11 +6,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ServerStorage(
     val diskAvailable: String,
-    val diskAvailableRaw: Float,
+    val diskAvailableRaw: Long,
     val diskSize: String,
-    val diskSizeRaw: Float,
+    val diskSizeRaw: Long,
     val diskUse: String,
-    val diskUseRaw: Float,
+    val diskUseRaw: Long,
     val diskUsagePercentage: Float
 )
 
@@ -43,4 +43,14 @@ data class ServerInfo(
     val thirdPartySupportUrl: String? = null,
     val version: String,
     val versionUrl: String
+)
+
+@Serializable
+data class ServerStatistics(
+    val photos: Int,
+    val videos: Int,
+    val usage: Long,
+    val usageByUser: List<UsageByUserDto>,
+    val usagePhotos: Long,
+    val usageVideos: Long
 )
