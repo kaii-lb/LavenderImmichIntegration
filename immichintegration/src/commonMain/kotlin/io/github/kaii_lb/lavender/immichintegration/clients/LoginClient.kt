@@ -144,7 +144,7 @@ internal class LoginClient(
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
-            body = UserDetails(name = name)
+            body = UserDetails(name = name, email = email)
         )?.status == HttpStatusCode.OK
 
     suspend fun changePassword(
