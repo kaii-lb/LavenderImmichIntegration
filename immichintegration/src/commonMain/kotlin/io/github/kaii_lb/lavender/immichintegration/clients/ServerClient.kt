@@ -9,7 +9,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
 
 internal class ServerClient(
-    private val baseUrl: String,
+    val baseUrl: String,
     private val client: ApiClient
 ) {
     suspend fun getStorage(accessToken: String): ServerStorage? =

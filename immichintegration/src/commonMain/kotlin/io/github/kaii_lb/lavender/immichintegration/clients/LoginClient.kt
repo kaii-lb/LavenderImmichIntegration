@@ -22,7 +22,7 @@ import io.ktor.http.Url
 import kotlinx.serialization.json.Json
 
 internal class LoginClient(
-    private val baseUrl: String,
+    val baseUrl: String,
     private val client: ApiClient
 ) {
     suspend fun ping(

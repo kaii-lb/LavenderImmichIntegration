@@ -30,7 +30,7 @@ class ServerState(
     private var serverClient: ServerClient? = null
 
     fun setBaseUrl(baseUrl: String, apiClient: ApiClient) {
-        if (baseUrl.isBlank()) return
+        if (serverClient?.baseUrl == baseUrl) return
 
         serverClient = ServerClient(
             baseUrl = baseUrl,

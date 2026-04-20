@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "io.github.kaii-lb.lavender"
-version = "2.1.4"
+version = "2.1.5"
 
 kotlin {
     androidLibrary {
