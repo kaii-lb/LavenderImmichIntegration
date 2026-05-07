@@ -8,7 +8,7 @@ import kotlin.uuid.Uuid
 @Serializable
 data class AlbumCreationInfo(
     val albumName: String,
-    val albumUsers: AlbumUserCreationInfo,
+    val albumUsers: List<AlbumUserCreationInfo>,
     val assetIds: List<Uuid>,
     val description: String
 )

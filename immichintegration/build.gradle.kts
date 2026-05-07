@@ -12,12 +12,12 @@ plugins {
 }
 
 group = "io.github.kaii-lb.lavender"
-version = "2.1.5"
+version = "2.1.6"
 
 kotlin {
     androidLibrary {
         namespace = "io.github.kaii_lb.lavender.immichintegration"
-        compileSdk = 36
+        compileSdk = 37
         minSdk = 24
 
         withJava()

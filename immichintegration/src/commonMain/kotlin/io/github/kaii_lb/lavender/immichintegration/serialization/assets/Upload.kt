@@ -26,7 +26,7 @@ data class AssetBulkUploadRequest(
 
 @Serializable
 data class AssetBulkUploadResponse(
-    val assets: List<AssetBulkUploadCheckResult>
+    val results: List<AssetBulkUploadCheckResult>
 )
 
 @OptIn(ExperimentalUuidApi::class)

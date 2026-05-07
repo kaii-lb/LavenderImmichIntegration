@@ -90,7 +90,7 @@ class AssetsClient(
         assets: AssetBulkUploadRequest,
         accessToken: String
     ): List<AssetBulkUploadCheckResult>? {
-        val response = client.get(
+        val response = client.post(
             url = Url("$baseUrl/api/assets/bulk-upload-check"),
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
@@ -98,7 +98,7 @@ class AssetsClient(
             body = assets
         )?.body<AssetBulkUploadResponse>()
 
-        return response?.assets
+        return response?.results
     }
 
     @OptIn(ExperimentalUuidApi::class)

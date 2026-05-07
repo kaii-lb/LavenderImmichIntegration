@@ -10,7 +10,6 @@ import io.github.kaii_lb.lavender.immichintegration.serialization.albums.ManageA
 import io.ktor.client.call.body
 import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
-import kotlinx.serialization.json.Json
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -42,7 +41,7 @@ class AlbumsClient(
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
-            body = Json.encodeToString(info)
+            body = info
         )?.body<Album>()
 
         return (response?.let { AlbumCreationState.Created(it) } ?: AlbumCreationState.Failed)
@@ -58,7 +57,7 @@ class AlbumsClient(
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
-            body = Json.encodeToString(ManageAssetsRequest(ids = assetIds))
+            body = ManageAssetsRequest(ids = assetIds)
         )?.body<List<ManageAssetsResponse>>()
 
         return response != null && response.all { it.error == null && it.success }
@@ -74,7 +73,7 @@ class AlbumsClient(
             headers = mapOf(
                 HttpHeaders.Authorization to "Bearer $accessToken"
             ),
-            body = Json.encodeToString(ManageAssetsRequest(ids = assetIds))
+            body = ManageAssetsRequest(ids = assetIds)
         )?.body<List<ManageAssetsResponse>>()
 
         return response != null && response.all { it.error == null && it.success }
