@@ -24,6 +24,7 @@ import io.ktor.http.content.PartData
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.logging.KtorSimpleLogger
+import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
 
 class ApiClient {
@@ -71,6 +72,8 @@ class ApiClient {
                 contentType(ContentType.Application.Json)
             }
         }
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Throwable) {
         log.error(e.message.toString())
         e.printStackTrace()
@@ -94,6 +97,8 @@ class ApiClient {
             if (body != null) setBody(body)
             contentType(ContentType.Application.Json)
         }
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Throwable) {
         log.error(e.message.toString())
         e.printStackTrace()
@@ -119,6 +124,8 @@ class ApiClient {
             if (body != null) setBody(body)
             contentType(ContentType.Application.Json)
         }
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Throwable) {
         log.error(e.message.toString())
         e.printStackTrace()
@@ -144,6 +151,8 @@ class ApiClient {
             if (body != null) setBody(body)
             contentType(ContentType.Application.Json)
         }
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Throwable) {
         log.error(e.message.toString())
         e.printStackTrace()
@@ -169,6 +178,8 @@ class ApiClient {
             if (body != null) setBody(body)
             contentType(ContentType.Application.Json)
         }
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Throwable) {
         log.error(e.message.toString())
         e.printStackTrace()
@@ -194,6 +205,8 @@ class ApiClient {
 
             contentType(ContentType.Application.Json)
         }
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Throwable) {
         log.error(e.message.toString())
         e.printStackTrace()
