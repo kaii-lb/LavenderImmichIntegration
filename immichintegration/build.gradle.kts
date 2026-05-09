@@ -4,15 +4,15 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.vanniktech.mavenPublish)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
 group = "io.github.kaii-lb.lavender"
-version = "2.1.7"
+version = "2.1.8"
 
 kotlin {
     android {
@@ -51,6 +51,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.androidx.core.ktx)
         }
 
         linuxX64Main.dependencies {

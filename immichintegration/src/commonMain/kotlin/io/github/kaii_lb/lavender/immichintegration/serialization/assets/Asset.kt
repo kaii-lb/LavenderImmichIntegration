@@ -1,5 +1,6 @@
 package io.github.kaii_lb.lavender.immichintegration.serialization.assets
 
+import io.github.kaii_lb.lavender.immichintegration.AssetSource
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
@@ -43,7 +44,7 @@ enum class AssetVisibility {
 @Serializable
 @OptIn(ExperimentalUuidApi::class)
 data class AssetUploadRequest(
-    val assetData: ByteArray,
+    val assetSource: AssetSource,
     val deviceAssetId: String,
     val deviceId: String,
     val duration: String? = null,
@@ -63,7 +64,6 @@ data class AssetUploadRequest(
         other as AssetUploadRequest
 
         if (isFavorite != other.isFavorite) return false
-        if (!assetData.contentEquals(other.assetData)) return false
         if (deviceAssetId != other.deviceAssetId) return false
         if (deviceId != other.deviceId) return false
         if (duration != other.duration) return false
@@ -80,7 +80,6 @@ data class AssetUploadRequest(
 
     override fun hashCode(): Int {
         var result = isFavorite.hashCode()
-        result = 31 * result + assetData.contentHashCode()
         result = 31 * result + deviceAssetId.hashCode()
         result = 31 * result + deviceId.hashCode()
         result = 31 * result + (duration?.hashCode() ?: 0)
@@ -96,7 +95,8 @@ data class AssetUploadRequest(
 
     internal fun toFormData() = MultiPartFormDataContent(
         formData {
-            append("assetData", assetData, Headers.build {
+            append("assetData", assetSource.getStream(), Headers.build {
+                append(HttpHeaders.ContentType, "application/octet-stream")
                 append(HttpHeaders.ContentDisposition, "filename=\"$filename\"")
             })
 

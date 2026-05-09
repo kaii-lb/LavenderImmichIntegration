@@ -1,5 +1,6 @@
 [versions]
 agp = "9.1.1"
+androidx-core-ktx = "1.18.0"
 kotlin = "2.3.21"
 kotlinxDatetime = "0.8.0"
 kotlinxIoCore = "0.9.0"
@@ -22,6 +23,7 @@ ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "k
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorVersion" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "test" }
 
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core-ktx" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 [plugins]
