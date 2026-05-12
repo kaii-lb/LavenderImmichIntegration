@@ -27,7 +27,9 @@ import io.ktor.util.logging.KtorSimpleLogger
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
 
-class ApiClient {
+class ApiClient(
+    debugMode: Boolean = false
+) {
     private val client = HttpClient {
         install(ContentNegotiation) {
             json(Json {
@@ -43,11 +45,12 @@ class ApiClient {
         }
         install(Logging) {
             logger = Logger.DEFAULT
-            level = LogLevel.HEADERS
+            level = if (debugMode) LogLevel.ALL else LogLevel.HEADERS
         }
 
         expectSuccess = true
     }
+
     private val log = KtorSimpleLogger("ApiClient")
 
     suspend fun post(

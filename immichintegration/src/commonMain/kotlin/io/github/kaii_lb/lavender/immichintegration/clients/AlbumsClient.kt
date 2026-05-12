@@ -1,5 +1,6 @@
 package io.github.kaii_lb.lavender.immichintegration.clients
 
+import io.github.kaii_lb.lavender.immichintegration.Auth
 import io.github.kaii_lb.lavender.immichintegration.serialization.albums.Album
 import io.github.kaii_lb.lavender.immichintegration.serialization.albums.AlbumCreationInfo
 import io.github.kaii_lb.lavender.immichintegration.serialization.albums.AlbumCreationState
@@ -8,24 +9,21 @@ import io.github.kaii_lb.lavender.immichintegration.serialization.albums.AlbumsG
 import io.github.kaii_lb.lavender.immichintegration.serialization.albums.ManageAssetsRequest
 import io.github.kaii_lb.lavender.immichintegration.serialization.albums.ManageAssetsResponse
 import io.ktor.client.call.body
-import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+
 @OptIn(ExperimentalUuidApi::class)
 class AlbumsClient(
-    private val baseUrl: String,
-    private val client: ApiClient
-) {
-    suspend fun getAll(
-        accessToken: String
-    ): AlbumsGetAllState {
+    private val client: ApiClient,
+    endpoint: String,
+    auth: Auth
+) : BaseClient(endpoint, auth) {
+    suspend fun getAll(): AlbumsGetAllState {
         val response = client.get(
-            url = Url("$baseUrl/api/albums"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/albums"),
+            headers = auth.headers,
             body = null
         )?.body<List<Album>>()
 
@@ -33,14 +31,11 @@ class AlbumsClient(
     }
 
     suspend fun createAlbum(
-        info: AlbumCreationInfo,
-        accessToken: String
+        info: AlbumCreationInfo
     ): AlbumCreationState {
         val response = client.post(
-            url = Url("$baseUrl/api/albums"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/albums"),
+            headers = auth.headers,
             body = info
         )?.body<Album>()
 
@@ -49,14 +44,11 @@ class AlbumsClient(
 
     suspend fun addAssets(
         albumId: Uuid,
-        assetIds: List<Uuid>,
-        accessToken: String
+        assetIds: List<Uuid>
     ): Boolean {
         val response = client.put(
-            url = Url("$baseUrl/api/albums/${albumId}/assets"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/albums/${albumId}/assets"),
+            headers = auth.headers,
             body = ManageAssetsRequest(ids = assetIds)
         )?.body<List<ManageAssetsResponse>>()
 
@@ -65,14 +57,11 @@ class AlbumsClient(
 
     suspend fun removeAssets(
         albumId: Uuid,
-        assetIds: List<Uuid>,
-        accessToken: String
+        assetIds: List<Uuid>
     ): Boolean {
         val response = client.delete(
-            url = Url("$baseUrl/api/albums/${albumId}/assets"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/albums/${albumId}/assets"),
+            headers = auth.headers,
             body = ManageAssetsRequest(ids = assetIds)
         )?.body<List<ManageAssetsResponse>>()
 
@@ -81,14 +70,11 @@ class AlbumsClient(
 
     suspend fun get(
         id: Uuid,
-        accessToken: String,
         withoutAssets: Boolean = false
     ): Album? {
         val response = client.get(
-            url = Url("$baseUrl/api/albums/${id}?withoutAssets=$withoutAssets"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/albums/${id}?withoutAssets=$withoutAssets"),
+            headers = auth.headers,
             body = null
         )?.body<Album>()
 
@@ -96,28 +82,22 @@ class AlbumsClient(
     }
 
     suspend fun delete(
-        id: Uuid,
-        accessToken: String
+        id: Uuid
     ): Boolean {
         return client.delete(
-            url = Url("$baseUrl/api/albums/${id}"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/albums/${id}"),
+            headers = auth.headers,
             body = null
         ) != null
     }
 
     suspend fun rename(
         id: Uuid,
-        newName: String,
-        accessToken: String
+        newName: String
     ): Boolean {
         return client.patch(
-            url = Url("$baseUrl/api/albums/${id}"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/albums/${id}"),
+            headers = auth.headers,
             body = AlbumRenameRequest(newName)
         ) != null
     }

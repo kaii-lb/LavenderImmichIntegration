@@ -1,5 +1,6 @@
 package io.github.kaii_lb.lavender.immichintegration.clients
 
+import io.github.kaii_lb.lavender.immichintegration.Auth
 import io.github.kaii_lb.lavender.immichintegration.serialization.assets.AssetBulkUploadCheckResult
 import io.github.kaii_lb.lavender.immichintegration.serialization.assets.AssetBulkUploadRequest
 import io.github.kaii_lb.lavender.immichintegration.serialization.assets.AssetBulkUploadResponse
@@ -19,17 +20,16 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 class AssetsClient(
-    private val baseUrl: String,
+    endpoint: String,
+    auth: Auth,
     private val client: ApiClient
-) {
+) : BaseClient(endpoint, auth) {
     suspend fun upload(
-        asset: AssetUploadRequest,
-        accessToken: String
+        asset: AssetUploadRequest
     ): AssetUploadResponse? {
         val response = client.post(
-            url = Url("$baseUrl/api/assets"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken",
+            url = Url("$endpoint/api/assets"),
+            headers = auth.headers + mapOf(
                 HttpHeaders.ContentType to ContentType.MultiPart.FormData
             ),
             body = asset.toFormData()
@@ -41,28 +41,22 @@ class AssetsClient(
     @OptIn(ExperimentalUuidApi::class)
     suspend fun delete(
         ids: List<Uuid>,
-        accessToken: String,
         force: Boolean = false
     ): Boolean {
         return client.delete(
-            url = Url("$baseUrl/api/assets"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/assets"),
+            headers = auth.headers,
             body = AssetDeleteRequest(ids, force)
         )?.status == HttpStatusCode.NoContent
     }
 
     @OptIn(ExperimentalUuidApi::class)
     suspend fun get(
-        id: Uuid,
-        accessToken: String
+        id: Uuid
     ): AssetResponse? {
         val response = client.get(
-            url = Url("$baseUrl/api/assets/${id}"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/assets/${id}"),
+            headers = auth.headers,
             body = null
         )?.body<AssetResponse>()
 
@@ -71,14 +65,11 @@ class AssetsClient(
 
     @OptIn(ExperimentalUuidApi::class)
     suspend fun download(
-        id: Uuid,
-        accessToken: String
+        id: Uuid
     ): ByteArray? {
         val response = client.get(
-            url = Url("$baseUrl/api/assets/${id}/original"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/assets/${id}/original"),
+            headers = auth.headers,
             body = null
         )?.body<ByteArray>()
 
@@ -87,14 +78,11 @@ class AssetsClient(
 
     @OptIn(ExperimentalUuidApi::class)
     suspend fun check(
-        assets: AssetBulkUploadRequest,
-        accessToken: String
+        assets: AssetBulkUploadRequest
     ): List<AssetBulkUploadCheckResult>? {
         val response = client.post(
-            url = Url("$baseUrl/api/assets/bulk-upload-check"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/assets/bulk-upload-check"),
+            headers = auth.headers,
             body = assets
         )?.body<AssetBulkUploadResponse>()
 
@@ -103,14 +91,11 @@ class AssetsClient(
 
     @OptIn(ExperimentalUuidApi::class)
     suspend fun favourite(
-        request: AssetFavouriteRequest,
-        accessToken: String
+        request: AssetFavouriteRequest
     ): Boolean {
         val response = client.put(
-            url = Url("$baseUrl/api/assets"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/assets"),
+            headers = auth.headers,
             body = request
         )?.status
 
@@ -119,14 +104,11 @@ class AssetsClient(
 
     @OptIn(ExperimentalUuidApi::class)
     suspend fun restore(
-        ids: List<Uuid>,
-        accessToken: String
+        ids: List<Uuid>
     ): Int? {
         val response = client.post(
-            url = Url("$baseUrl/api/trash/restore/assets"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/trash/restore/assets"),
+            headers = auth.headers,
             body = AssetRestoreRequest(ids)
         )?.body<AssetRestoreResponse>()
 

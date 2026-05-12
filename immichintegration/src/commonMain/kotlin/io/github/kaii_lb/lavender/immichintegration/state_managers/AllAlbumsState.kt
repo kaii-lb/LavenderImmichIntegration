@@ -1,10 +1,10 @@
-@file:Suppress("unused")
-
 package io.github.kaii_lb.lavender.immichintegration.state_managers
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import io.github.kaii_lb.lavender.immichintegration.Auth
 import io.github.kaii_lb.lavender.immichintegration.clients.AlbumsClient
 import io.github.kaii_lb.lavender.immichintegration.clients.ApiClient
 import io.github.kaii_lb.lavender.immichintegration.serialization.albums.AlbumsGetAllState
@@ -16,35 +16,52 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AllAlbumsState(
-    private val baseUrl: String,
     private val coroutineScope: CoroutineScope,
+    endpoint: String,
+    auth: Auth,
     apiClient: ApiClient
 ) {
     private val albumClient =
         AlbumsClient(
-            baseUrl = baseUrl,
+            endpoint = endpoint,
+            auth = auth,
             client = apiClient
         )
 
     private val _state = MutableStateFlow<AlbumsGetAllState>(AlbumsGetAllState.Failed)
     val state = _state.asStateFlow()
 
-    fun load(accessToken: String) = coroutineScope.launch(Dispatchers.IO) {
-        _state.value = albumClient.getAll(accessToken)
+    fun load() = coroutineScope.launch(Dispatchers.IO) {
+        _state.value = albumClient.getAll()
+    }
+
+    internal fun setEndpoint(endpoint: String) {
+        albumClient.setEndpoint(endpoint)
+    }
+
+    internal fun setAuth(auth: Auth) {
+        albumClient.setAuth(auth)
     }
 }
 
 @Composable
-fun rememberAllAlbumsState(baseUrl: String): AllAlbumsState {
+fun rememberAllAlbumsState(endpoint: String, auth: Auth): AllAlbumsState {
     val apiClient = LocalApiClient.current
     val coroutineScope = rememberCoroutineScope()
 
-
-    return remember(baseUrl) {
+    val state = remember {
         AllAlbumsState(
-            baseUrl = baseUrl,
+            endpoint = endpoint,
+            auth = auth,
             coroutineScope = coroutineScope,
             apiClient = apiClient
         )
     }
+
+    LaunchedEffect(endpoint, auth) {
+        state.setEndpoint(endpoint)
+        state.setAuth(auth)
+    }
+
+    return state
 }

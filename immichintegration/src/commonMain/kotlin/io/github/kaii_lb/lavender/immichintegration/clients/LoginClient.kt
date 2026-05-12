@@ -2,6 +2,7 @@
 
 package io.github.kaii_lb.lavender.immichintegration.clients
 
+import io.github.kaii_lb.lavender.immichintegration.Auth
 import io.github.kaii_lb.lavender.immichintegration.serialization.AuthStatus
 import io.github.kaii_lb.lavender.immichintegration.serialization.ChangePasswordRequest
 import io.github.kaii_lb.lavender.immichintegration.serialization.FullUserResponse
@@ -22,14 +23,15 @@ import io.ktor.http.Url
 import kotlinx.serialization.json.Json
 
 internal class LoginClient(
-    val baseUrl: String,
-    private val client: ApiClient
-) {
+    private val client: ApiClient,
+    endpoint: String,
+    auth: Auth
+) : BaseClient(endpoint, auth) {
     suspend fun ping(
         address: String? = null
     ): Boolean =
         client.get(
-            url = Url("${address ?: baseUrl}/api/server/ping"),
+            url = Url("${address ?: endpoint}/api/server/ping"),
             headers = null,
             body = null
         )?.body<ServerPing>()?.response == "pong"
@@ -40,7 +42,7 @@ internal class LoginClient(
         userAgent: String
     ): LoginStatus {
         val response = client.post(
-            url = Url("$baseUrl/api/auth/login"),
+            url = Url("$endpoint/api/auth/login"),
             headers = mapOf(
                 HttpHeaders.UserAgent to userAgent
             ),
@@ -52,48 +54,40 @@ internal class LoginClient(
         return response ?: LoginStatus.Failed
     }
 
-    suspend fun logout(accessToken: String): Boolean {
+    suspend fun logout(): Boolean {
         val response = client.post(
-            url = Url("$baseUrl/api/auth/logout"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/auth/logout"),
+            headers = auth.headers,
             body = null
         )?.body<LogoutStatus>()
 
         return response?.successful == true
     }
 
-    suspend fun getUsers(accessToken: String): List<UserResponse> {
+    suspend fun getUsers(): List<UserResponse> {
         val response = client.get(
-            url = Url("$baseUrl/api/users"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/users"),
+            headers = auth.headers,
             body = null
         )?.body<List<UserResponse>>()
 
         return response ?: emptyList()
     }
 
-    suspend fun validate(accessToken: String): Boolean {
+    suspend fun validate(): Boolean {
         val response = client.post(
-            url = Url("$baseUrl/api/auth/validateToken"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/auth/validateToken"),
+            headers = auth.headers,
             body = null
         )?.body<AuthStatus>()
 
         return response?.valid ?: false
     }
 
-    suspend fun getMe(accessToken: String): FullUserResponse? {
+    suspend fun getMe(): FullUserResponse? {
         val response = client.get(
-            url = Url("$baseUrl/api/users/me"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/users/me"),
+            headers = auth.headers,
             body = null
         )?.body<FullUserResponse>()
 
@@ -103,12 +97,10 @@ internal class LoginClient(
     suspend fun uploadPfp(
         bytes: ByteArray,
         filename: String,
-        accessToken: String
     ): ProfilePictureResponse? =
         client.uploadForm(
-            url = Url("$baseUrl/api/users/profile-image"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken",
+            url = Url("$endpoint/api/users/profile-image"),
+            headers = auth.headers + mapOf(
                 HttpHeaders.ContentType to ContentType.MultiPart.FormData,
                 HttpHeaders.ContentDisposition to "filename=\"${filename}\""
             ),
@@ -122,41 +114,33 @@ internal class LoginClient(
 
 
     suspend fun downloadPfp(
-        userId: String,
-        accessToken: String
+        userId: String
     ): ByteArray? =
         client.get(
-            url = Url("$baseUrl/api/users/$userId/profile-image"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken",
+            url = Url("$endpoint/api/users/$userId/profile-image"),
+            headers = auth.headers + mapOf(
                 HttpHeaders.ContentType to ContentType.Application.OctetStream
             ),
             body = null
         )?.body<ByteArray>()
 
     suspend fun updateInfo(
-        accessToken: String,
         name: String? = null,
         email: String? = null
     ): Boolean =
         client.put(
-            url = Url("$baseUrl/api/users/me"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/users/me"),
+            headers = auth.headers,
             body = UserDetails(name = name, email = email)
         )?.status == HttpStatusCode.OK
 
     suspend fun changePassword(
-        accessToken: String,
         currentPassword: String,
         newPassword: String,
         invalidateSessions: Boolean = false
     ): Boolean = client.post(
-        url = Url("$baseUrl/api/auth/change-password"),
-        headers = mapOf(
-            HttpHeaders.Authorization to "Bearer $accessToken"
-        ),
+        url = Url("$endpoint/api/auth/change-password"),
+        headers = auth.headers,
         body = ChangePasswordRequest(invalidateSessions, currentPassword, newPassword)
     )?.status == HttpStatusCode.OK
 }

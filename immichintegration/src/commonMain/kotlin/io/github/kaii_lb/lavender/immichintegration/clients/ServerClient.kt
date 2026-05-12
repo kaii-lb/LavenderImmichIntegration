@@ -1,23 +1,22 @@
 package io.github.kaii_lb.lavender.immichintegration.clients
 
+import io.github.kaii_lb.lavender.immichintegration.Auth
 import io.github.kaii_lb.lavender.immichintegration.serialization.ServerInfo
 import io.github.kaii_lb.lavender.immichintegration.serialization.ServerPing
 import io.github.kaii_lb.lavender.immichintegration.serialization.ServerStatistics
 import io.github.kaii_lb.lavender.immichintegration.serialization.ServerStorage
 import io.ktor.client.call.body
-import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
 
 internal class ServerClient(
-    val baseUrl: String,
-    private val client: ApiClient
-) {
-    suspend fun getStorage(accessToken: String): ServerStorage? =
+    private val client: ApiClient,
+    endpoint: String,
+    auth: Auth
+) : BaseClient(endpoint, auth) {
+    suspend fun getStorage(): ServerStorage? =
         client.get(
-            url = Url("$baseUrl/api/server/storage"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/server/storage"),
+            headers = auth.headers,
             body = null
         )?.body<ServerStorage>()
 
@@ -25,26 +24,22 @@ internal class ServerClient(
         address: String? = null
     ): Boolean =
         client.get(
-            url = Url("${address ?: baseUrl}/api/server/ping"),
+            url = Url("${address ?: endpoint}/api/server/ping"),
             headers = null,
             body = null
         )?.body<ServerPing>()?.response == "pong"
 
-    suspend fun getVersionInfo(accessToken: String): ServerInfo? =
+    suspend fun getVersionInfo(): ServerInfo? =
         client.get(
-            url = Url("$baseUrl/api/server/about"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/server/about"),
+            headers = auth.headers,
             body = null
         )?.body()
 
-    suspend fun getUsagePerUser(accessToken: String): ServerStatistics? =
+    suspend fun getUsagePerUser(): ServerStatistics? =
         client.get(
-            url = Url("$baseUrl/api/server/statistics"),
-            headers = mapOf(
-                HttpHeaders.Authorization to "Bearer $accessToken"
-            ),
+            url = Url("$endpoint/api/server/statistics"),
+            headers = auth.headers,
             body = null
         )?.body()
 }

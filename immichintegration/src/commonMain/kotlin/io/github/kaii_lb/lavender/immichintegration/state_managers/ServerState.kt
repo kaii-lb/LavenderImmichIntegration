@@ -1,11 +1,9 @@
-@file:Suppress("unused")
-
 package io.github.kaii_lb.lavender.immichintegration.state_managers
 
+import io.github.kaii_lb.lavender.immichintegration.Auth
 import io.github.kaii_lb.lavender.immichintegration.clients.ApiClient
 import io.github.kaii_lb.lavender.immichintegration.clients.ServerClient
 import io.github.kaii_lb.lavender.immichintegration.serialization.UsageByUserDto
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -24,27 +22,26 @@ interface ServerInfoState {
     ) : ServerInfoState
 }
 
-class ServerState(
-    private val coroutineScope: CoroutineScope
-) {
+class ServerState {
     private var serverClient: ServerClient? = null
 
-    fun setBaseUrl(baseUrl: String, apiClient: ApiClient) {
-        if (serverClient?.baseUrl == baseUrl) return
+    fun setEndpoint(endpoint: String, apiClient: ApiClient) {
+        if (serverClient?.getEndpoint() == endpoint) return
 
         serverClient = ServerClient(
-            baseUrl = baseUrl,
+            endpoint = endpoint,
+            auth = serverClient?.getAuth() ?: Auth.None,
             client = apiClient
         )
     }
 
-    suspend fun fetch(accessToken: String): ServerInfoState = withContext(Dispatchers.IO) {
+    suspend fun fetch(): ServerInfoState = withContext(Dispatchers.IO) {
         if (serverClient == null) return@withContext ServerInfoState.Unavailable
 
         val online = serverClient!!.ping()
-        val storage = serverClient!!.getStorage(accessToken)
-        val info = serverClient!!.getVersionInfo(accessToken)
-        val perUserStorage = serverClient!!.getUsagePerUser(accessToken)
+        val storage = serverClient!!.getStorage()
+        val info = serverClient!!.getVersionInfo()
+        val perUserStorage = serverClient!!.getUsagePerUser()
 
         if (storage == null || info == null || perUserStorage == null) {
             return@withContext ServerInfoState.Unavailable
@@ -68,10 +65,4 @@ class ServerState(
 
         serverClient!!.ping(address)
     }
-
-    fun validateServerAddress(
-        address: String
-    ): Boolean =
-        (address.startsWith("https://") || address.startsWith("http://"))
-                && ((Regex("(?<=:)[0-9]+$").containsMatchIn(address) && address.count { it == ':' } <= 2))
 }
