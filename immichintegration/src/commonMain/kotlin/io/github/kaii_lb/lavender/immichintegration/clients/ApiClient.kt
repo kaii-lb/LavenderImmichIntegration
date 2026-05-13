@@ -39,9 +39,9 @@ class ApiClient(
             })
         }
         install(HttpTimeout) {
-            requestTimeoutMillis = 15000
+            requestTimeoutMillis = 5000
             connectTimeoutMillis = 5000
-            socketTimeoutMillis = 15000
+            socketTimeoutMillis = 5000
         }
         install(Logging) {
             logger = Logger.DEFAULT
