@@ -1,3 +1,4 @@
+import io.github.kaii_lb.lavender.immichintegration.Auth
 import io.github.kaii_lb.lavender.immichintegration.clients.ApiClient
 import io.github.kaii_lb.lavender.immichintegration.clients.ServerClient
 import kotlinx.coroutines.runBlocking
@@ -8,8 +9,9 @@ class ServerPing {
     @Test
     fun ping() {
         val client = ServerClient(
-            baseUrl = "http://localhost:2283",
-            client = ApiClient()
+            endpoint = TestConfig.SERVER_URL,
+            auth = Auth.None,
+            client = ApiClient(debugMode = true)
         )
 
         runBlocking {

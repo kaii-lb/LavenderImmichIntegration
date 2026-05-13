@@ -37,4 +37,13 @@ sealed interface Auth {
                     emptyMap()
                 }
             }
+
+    /** returns the accessToken or apiKey if this auth is either,
+     *  otherwise returns an empty string */
+    @Suppress("unused")
+    fun asString() = when (this) {
+        is AccessToken -> accessToken
+        is ApiKey -> apiKey
+        None -> ""
+    }
 }

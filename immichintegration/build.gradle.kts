@@ -2,6 +2,7 @@
 
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -102,4 +103,47 @@ mavenPublishing {
             developerConnection = "scm:git:ssh://git@github.com/kaii-lb/LavenderImmichIntegration.git"
         }
     }
+}
+
+abstract class GenerateSecretsTask : DefaultTask() {
+    @get:Input
+    abstract val apiKey: Property<String>
+
+    @get:Input
+    abstract val serverUrl: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        val folder = outputDir.get().asFile
+        if (!folder.exists()) folder.mkdirs()
+
+        val configFile = folder.resolve("TestConfig.kt")
+        configFile.writeText(
+            """
+            internal object TestConfig {
+                const val API_KEY = "${apiKey.get()}"
+                const val SERVER_URL = "${serverUrl.get()}"
+            }
+            """.trimIndent()
+        )
+    }
+}
+
+val generateTestSecrets = tasks.register<GenerateSecretsTask>("generateTestSecrets") {
+    val localProperties = Properties().apply {
+        val file = project.rootProject.file("immichintegration/local.properties")
+        if (file.exists()) file.inputStream().use { load(it) }
+    }
+
+    apiKey.set(localProperties.getProperty("IMMICH_API_KEY") ?: "")
+    serverUrl.set(localProperties.getProperty("IMMICH_SERVER_URL") ?: "")
+
+    outputDir.set(layout.buildDirectory.dir("generated/test-secrets/kotlin"))
+}
+
+kotlin.sourceSets.commonTest {
+    kotlin.srcDir(generateTestSecrets.map { it.outputDir })
 }

@@ -22,26 +22,26 @@ interface ServerInfoState {
     ) : ServerInfoState
 }
 
-class ServerState {
-    private var serverClient: ServerClient? = null
+class ServerState(apiClient: ApiClient) {
+    private var serverClient = ServerClient(
+        endpoint = "",
+        auth = Auth.None,
+        client = apiClient
+    )
 
-    fun setEndpoint(endpoint: String, apiClient: ApiClient) {
-        if (serverClient?.getEndpoint() == endpoint) return
+    fun setEndpoint(endpoint: String) {
+        serverClient.setEndpoint(endpoint)
+    }
 
-        serverClient = ServerClient(
-            endpoint = endpoint,
-            auth = serverClient?.getAuth() ?: Auth.None,
-            client = apiClient
-        )
+    fun setAuth(auth: Auth) {
+        serverClient.setAuth(auth)
     }
 
     suspend fun fetch(): ServerInfoState = withContext(Dispatchers.IO) {
-        if (serverClient == null) return@withContext ServerInfoState.Unavailable
-
-        val online = serverClient!!.ping()
-        val storage = serverClient!!.getStorage()
-        val info = serverClient!!.getVersionInfo()
-        val perUserStorage = serverClient!!.getUsagePerUser()
+        val online = serverClient.ping()
+        val storage = serverClient.getStorage()
+        val info = serverClient.getVersionInfo()
+        val perUserStorage = serverClient.getUsagePerUser()
 
         if (storage == null || info == null || perUserStorage == null) {
             return@withContext ServerInfoState.Unavailable
@@ -61,8 +61,6 @@ class ServerState {
     suspend fun ping(
         address: String? = null
     ) = withContext(Dispatchers.IO) {
-        if (serverClient == null) return@withContext false
-
-        serverClient!!.ping(address)
+        serverClient.ping(address)
     }
 }
