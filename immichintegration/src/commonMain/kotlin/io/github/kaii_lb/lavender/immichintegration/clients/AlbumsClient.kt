@@ -21,6 +21,8 @@ class AlbumsClient(
     auth: Auth
 ) : BaseClient(endpoint, auth) {
     suspend fun getAll(): AlbumsGetAllState {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return AlbumsGetAllState.Failed
+
         val response = client.get(
             url = Url("$endpoint/api/albums"),
             headers = auth.headers,
@@ -33,6 +35,8 @@ class AlbumsClient(
     suspend fun createAlbum(
         info: AlbumCreationInfo
     ): AlbumCreationState {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return AlbumCreationState.Failed
+
         val response = client.post(
             url = Url("$endpoint/api/albums"),
             headers = auth.headers,
@@ -46,6 +50,8 @@ class AlbumsClient(
         albumId: Uuid,
         assetIds: List<Uuid>
     ): Boolean {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return false
+
         val response = client.put(
             url = Url("$endpoint/api/albums/${albumId}/assets"),
             headers = auth.headers,
@@ -59,6 +65,8 @@ class AlbumsClient(
         albumId: Uuid,
         assetIds: List<Uuid>
     ): Boolean {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return false
+
         val response = client.delete(
             url = Url("$endpoint/api/albums/${albumId}/assets"),
             headers = auth.headers,
@@ -72,6 +80,8 @@ class AlbumsClient(
         id: Uuid,
         withoutAssets: Boolean = false
     ): Album? {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return null
+
         val response = client.get(
             url = Url("$endpoint/api/albums/${id}?withoutAssets=$withoutAssets"),
             headers = auth.headers,
@@ -84,6 +94,8 @@ class AlbumsClient(
     suspend fun delete(
         id: Uuid
     ): Boolean {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return false
+
         return client.delete(
             url = Url("$endpoint/api/albums/${id}"),
             headers = auth.headers,
@@ -95,6 +107,8 @@ class AlbumsClient(
         id: Uuid,
         newName: String
     ): Boolean {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return false
+
         return client.patch(
             url = Url("$endpoint/api/albums/${id}"),
             headers = auth.headers,

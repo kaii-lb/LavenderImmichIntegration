@@ -13,33 +13,45 @@ internal class ServerClient(
     endpoint: String,
     auth: Auth
 ) : BaseClient(endpoint, auth) {
-    suspend fun getStorage(): ServerStorage? =
-        client.get(
+    suspend fun getStorage(): ServerStorage? {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return null
+
+        return client.get(
             url = Url("$endpoint/api/server/storage"),
             headers = auth.headers,
             body = null
         )?.body<ServerStorage>()
+    }
 
     suspend fun ping(
         address: String? = null
-    ): Boolean =
-        client.get(
+    ): Boolean {
+        if (endpoint.isBlank()) return false
+
+        return client.get(
             url = Url("${address ?: endpoint}/api/server/ping"),
             headers = null,
             body = null
         )?.body<ServerPing>()?.response == "pong"
+    }
 
-    suspend fun getVersionInfo(): ServerInfo? =
-        client.get(
+    suspend fun getVersionInfo(): ServerInfo? {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return null
+
+        return client.get(
             url = Url("$endpoint/api/server/about"),
             headers = auth.headers,
             body = null
         )?.body()
+    }
 
-    suspend fun getUsagePerUser(): ServerStatistics? =
-        client.get(
+    suspend fun getUsagePerUser(): ServerStatistics? {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return null
+
+        return client.get(
             url = Url("$endpoint/api/server/statistics"),
             headers = auth.headers,
             body = null
         )?.body()
+    }
 }

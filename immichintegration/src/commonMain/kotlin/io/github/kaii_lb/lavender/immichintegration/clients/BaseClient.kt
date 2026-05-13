@@ -19,7 +19,4 @@ open class BaseClient(
     fun setAuth(auth: Auth) {
         this.auth = auth
     }
-
-    internal fun getEndpoint() = endpoint
-    internal fun getAuth() = auth
 }

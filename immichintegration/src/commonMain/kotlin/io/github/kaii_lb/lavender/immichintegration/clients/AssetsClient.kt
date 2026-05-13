@@ -27,6 +27,8 @@ class AssetsClient(
     suspend fun upload(
         asset: AssetUploadRequest
     ): AssetUploadResponse? {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return null
+
         val response = client.post(
             url = Url("$endpoint/api/assets"),
             headers = auth.headers + mapOf(
@@ -43,6 +45,8 @@ class AssetsClient(
         ids: List<Uuid>,
         force: Boolean = false
     ): Boolean {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return false
+
         return client.delete(
             url = Url("$endpoint/api/assets"),
             headers = auth.headers,
@@ -54,6 +58,8 @@ class AssetsClient(
     suspend fun get(
         id: Uuid
     ): AssetResponse? {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return null
+
         val response = client.get(
             url = Url("$endpoint/api/assets/${id}"),
             headers = auth.headers,
@@ -67,6 +73,8 @@ class AssetsClient(
     suspend fun download(
         id: Uuid
     ): ByteArray? {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return null
+
         val response = client.get(
             url = Url("$endpoint/api/assets/${id}/original"),
             headers = auth.headers,
@@ -80,6 +88,8 @@ class AssetsClient(
     suspend fun check(
         assets: AssetBulkUploadRequest
     ): List<AssetBulkUploadCheckResult>? {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return null
+
         val response = client.post(
             url = Url("$endpoint/api/assets/bulk-upload-check"),
             headers = auth.headers,
@@ -93,6 +103,8 @@ class AssetsClient(
     suspend fun favourite(
         request: AssetFavouriteRequest
     ): Boolean {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return false
+
         val response = client.put(
             url = Url("$endpoint/api/assets"),
             headers = auth.headers,
@@ -106,6 +118,8 @@ class AssetsClient(
     suspend fun restore(
         ids: List<Uuid>
     ): Int? {
+        if (endpoint.isBlank() || auth.asString().isBlank()) return null
+
         val response = client.post(
             url = Url("$endpoint/api/trash/restore/assets"),
             headers = auth.headers,
